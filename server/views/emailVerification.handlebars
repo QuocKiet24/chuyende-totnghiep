@@ -4,42 +4,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Verify Your Email</title>
-    <style>
-
-      *{ text-decoration: none; } .container{ margin: 0 auto; max-width: 500px;
-      width: 100%; } .btn-link{ display: inline-block; padding: 10px 20px;
-      background-color: #007bff; color: #fff !important; text-decoration: none;
-      border-radius: 5px; } img{ width: 30px; border-radius: 50%;}
-    </style>
   </head>
-  <body>
-    <div class="container">
-      <img src="https://avatars.githubusercontent.com/u/19819005?v=4" alt="" />
-      <h2 class="color-primary">{{subject}}</h2>
-      <hr />
-      <p>Hello
-        {{name}},
-      </p>
-      <p>Please use the url below to verify your account.<br />This link is
-        valid for 24 hours.</p>
-
-      <a href={{link}} class="btn-link">Verify Account</a>
-
-      <p style="margin-bottom: 50px;">
-        If you didn't create an account, you can ignore this email.
-      </p>
-
-      <hr />
-      <p>Regards,</p>
-      <p><b>AuthKit</b> Team</p>
-      <div>
-        <p style="font-size: 0.8rem;">
-          If you’re having trouble clicking the "Verify Account" button, copy
-          and paste the URL below into your web browser:
-          <br />
-          <a href={{link}}>{{link}}</a>
-        </p>
-      </div>
+ <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="background: linear-gradient(to right, #4CAF50, #45a049); padding: 20px; text-align: center;">
+    <h1 style="color: white; margin: 0;">{{subject}}</h1>
+  </div>
+  <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <p>Hello, {{name}}</p>
+    <p>Thank you for signing up! Your verification code is:</p>
+    <div style="text-align: center; margin: 30px 0;">
+      <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #4CAF50;">{{link}}</span>
     </div>
-  </body>
+    <p>Enter this code on the verification page to complete your registration.</p>
+    <p>This code will expire in 15 minutes for security reasons.</p>
+    <p>If you didn't create an account with us, please ignore this email.</p>
+    <p>Best regards,<br>Your App Team</p>
+  </div>
+  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
 </html>
