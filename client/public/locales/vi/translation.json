@@ -1,6 +1,25 @@
+
 {
   "welcome": "Chào mừng đến với ECommerce Shopping",
-  "home": "Trang chủ",
-  "about": "Về chúng tôi",
-  "notfound": "Trang không tìm thấy"
+  "home": "Home",
+  "about": "About Us",
+  "notfound": "Trang không tìm thấy",
+  "register": {
+    "h1": "Đăng ký",
+    "redirect": "Đã có tài khoản?",
+    "labelUserName": "Tên tài khoản",
+    "placeholderUserName": "Nhập tên tài khoản",
+    "labelEmail": "Email",
+    "placeholderEmail": "Nhập Email",
+    "labelPassword": "Mật khẩu",
+    "placeholderPassword": "Nhập mật khẩu"
+  },
+  "login": {
+    "h1": "Đăng nhập",
+    "redirect": "Chưa có tài khoản?",
+    "labelEmail": "Email",
+    "placeholderEmail": "Nhập Email",
+    "labelPassword": "Mật khẩu",
+    "placeholderPassword": "Nhập mật khẩu"
+  }
 }

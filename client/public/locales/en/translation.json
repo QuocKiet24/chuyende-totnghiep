@@ -2,5 +2,23 @@
   "welcome": "Welcome to ECommerce Shopping",
   "home": "Home",
   "about": "About Us",
-  "notfound": "Page Not Found"
+  "notfound": "Trang không tìm thấy",
+  "register": {
+    "h1": "Sign Up",
+    "redirect": "Already have an account?",
+    "labelUserName": "User Name",
+    "placeholderUserName": "Enter your user name",
+    "labelEmail": "Email",
+    "placeholderEmail": "Enter your email",
+    "labelPassword": "Password",
+    "placeholderPassword": "Enter your password"
+  },
+  "login": {
+    "h1": "Login",
+    "redirect": "Don't have an account?",
+    "labelEmail": "Email",
+    "placeholderEmail": "Enter your email",
+    "labelPassword": "Password",
+    "placeholderPassword": "Enter your password"
+  }
 }
