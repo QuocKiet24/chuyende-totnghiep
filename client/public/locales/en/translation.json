@@ -1,5 +1,6 @@
 {
-  "welcome": "Welcome",
+  "welcome": "Welcome to ECommerce Shopping",
   "home": "Home",
-  "about": "About Us"
+  "about": "About Us",
+  "notfound": "Page Not Found"
 }
