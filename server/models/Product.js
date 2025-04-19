@@ -12,12 +12,12 @@ const ProductSchema = new mongoose.Schema(
       en: { type: String, required: true }, // Mô tả tiếng Anh
     },
     category: {
-      vi: { type: String, required: true }, // Danh mục tiếng Việt
-      en: { type: String, required: true }, // Danh mục tiếng Anh
+      type: String,
+      required: true,
     },
     brand: {
-      vi: { type: String, required: true }, // Thương hiệu tiếng Việt
-      en: { type: String, required: true }, // Thương hiệu tiếng Anh
+      type: String,
+      required: true,
     },
     price: { type: Number, required: true },
     salePrice: { type: Number, required: true },

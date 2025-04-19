@@ -57,13 +57,16 @@ export const useAddProductFormElements = () => {
       label: t("admin.createProduct.titleLabel"),
       name: "title",
       componentType: "input",
-      type: "text",
+      isMultilang: true,
+      langs: ["vi", "en"],
       placeholder: t("admin.createProduct.placeholderTitle"),
     },
     {
       label: t("admin.createProduct.descriptionLabel"),
       name: "description",
       componentType: "textarea",
+      isMultilang: true,
+      langs: ["vi", "en"],
       placeholder: t("admin.createProduct.placeholderDescription"),
     },
     {

@@ -5,6 +5,7 @@ import { FileIcon, Ghost, UploadCloudIcon, XIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
+import { Skeleton } from "../ui/skeleton";
 
 const ProductImageUpload = ({
   imageFile,
@@ -12,6 +13,7 @@ const ProductImageUpload = ({
   uploadedImageUrl,
   setUploadedImageUrl,
   setImageLoadingState,
+  imageLoadingState,
 }) => {
   const { t } = useTranslation();
   const inputRef = useRef(null);
@@ -84,6 +86,8 @@ const ProductImageUpload = ({
             <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
             <span> {t("admin.createProduct.pTagForImgUpload")}</span>
           </Label>
+        ) : imageLoadingState ? (
+          <Skeleton className="h-10 bg-gray-100" />
         ) : (
           <div className="flex items-center justify-between">
             <div className="flex items-center">

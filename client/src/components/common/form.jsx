@@ -19,16 +19,44 @@ const CommonForm = ({
   buttonText,
 }) => {
   const renderInputsByComponentType = (getControlItem) => {
-    let element = null;
     const value = formData[getControlItem.name] || "";
 
+    // MULTILANG CASE
+    if (getControlItem.isMultilang) {
+      return (
+        <div className="flex flex-col gap-4">
+          {getControlItem.langs.map((lang) => (
+            <div className="flex-1" key={lang}>
+              <Label className="text-xs text-muted-foreground capitalize">
+                {lang}
+              </Label>
+              <Input
+                name={`${getControlItem.name}.${lang}`}
+                placeholder={`${getControlItem.placeholder} (${lang})`}
+                value={value?.[lang] || ""}
+                onChange={(event) =>
+                  setFormData({
+                    ...formData,
+                    [getControlItem.name]: {
+                      ...(formData[getControlItem.name] || {}),
+                      [lang]: event.target.value,
+                    },
+                  })
+                }
+              />
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    // DEFAULT INPUTS
     switch (getControlItem.componentType) {
       case "input":
-        element = (
+        return (
           <Input
             name={getControlItem.name}
             placeholder={getControlItem.placeholder}
-            id={getControlItem.name}
             type={getControlItem.type}
             value={value}
             onChange={(event) =>
@@ -39,13 +67,11 @@ const CommonForm = ({
             }
           />
         );
-        break;
       case "textarea":
-        element = (
+        return (
           <Textarea
             name={getControlItem.name}
             placeholder={getControlItem.placeholder}
-            id={getControlItem.id}
             value={value}
             onChange={(event) =>
               setFormData({
@@ -55,14 +81,13 @@ const CommonForm = ({
             }
           />
         );
-        break;
       case "select":
-        element = (
+        return (
           <Select
-            onValueChange={(value) =>
+            onValueChange={(val) =>
               setFormData({
                 ...formData,
-                [getControlItem.name]: value,
+                [getControlItem.name]: val,
               })
             }
             value={value}
@@ -71,41 +96,22 @@ const CommonForm = ({
               <SelectValue placeholder={getControlItem.label} />
             </SelectTrigger>
             <SelectContent>
-              {getControlItem.options && getControlItem.options.length > 0
-                ? getControlItem.options.map((optionItem) => (
-                    <SelectItem key={optionItem.id} value={optionItem.id}>
-                      {optionItem.label}
-                    </SelectItem>
-                  ))
-                : null}
+              {getControlItem.options?.map((opt) => (
+                <SelectItem key={opt.id} value={opt.id}>
+                  {opt.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         );
-        break;
       default:
-        element = (
-          <Input
-            name={getControlItem.name}
-            placeholder={getControlItem.placeholder}
-            id={getControlItem.name}
-            type={getControlItem.type}
-            value={value}
-            onChange={(event) =>
-              setFormData({
-                ...formData,
-                [getControlItem.name]: event.target.value,
-              })
-            }
-          />
-        );
-        break;
+        return null;
     }
-    return element;
   };
 
   return (
     <form className="p-4" onSubmit={onSubmit}>
-      <div className="flex flex-col gap-3 ">
+      <div className="flex flex-col gap-3">
         {formControls.map((controlItem) => (
           <div className="grid w-full gap-1.5" key={controlItem.name}>
             <Label className="mb-1">{controlItem.label}</Label>
