@@ -18,10 +18,13 @@ import ShoppingCheckout from "./pages/shop/checkout";
 import ShoppingAccount from "./pages/shop/account";
 import CheckAuth from "./components/common/check-auth";
 import UnauthPage from "./pages/unAuth";
+import EmailVerificationPage from "./pages/auth/verifyEmail";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getCurrentUser } from "./store/auth-slice";
 
 const AppRoutes = () => {
-  const isAuthenticated = false;
-  const user = null;
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   return (
     <Routes>
       {/* Wrapper lang route */}
@@ -36,6 +39,7 @@ const AppRoutes = () => {
         >
           <Route path="login" element={<AuthLogin />} />
           <Route path="register" element={<AuthRegister />} />
+          <Route path="verify-email" element={<EmailVerificationPage />} />
         </Route>
 
         <Route
@@ -52,18 +56,25 @@ const AppRoutes = () => {
           <Route path="products" element={<AdminProducts />} />
         </Route>
 
-        <Route
-          path="shop"
-          element={
-            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-              <ShoppingLayout />
-            </CheckAuth>
-          }
-        >
+        <Route path="shop" element={<ShoppingLayout />}>
           <Route path="home" element={<ShoppingHome />} />
           <Route path="listing" element={<ShoppingListing />} />
-          <Route path="checkout" element={<ShoppingCheckout />} />
-          <Route path="acccount" element={<ShoppingAccount />} />
+          <Route
+            path="checkout"
+            element={
+              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                <ShoppingCheckout />
+              </CheckAuth>
+            }
+          />
+          <Route
+            path="account"
+            element={
+              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                <ShoppingAccount />
+              </CheckAuth>
+            }
+          />
         </Route>
         <Route path="unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />
@@ -84,6 +95,11 @@ const AppRoutes = () => {
 };
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getCurrentUser());
+  }, []);
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <LanguageSwitcher />
