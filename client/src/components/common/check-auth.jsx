@@ -1,4 +1,3 @@
-// CheckAuth.tsx
 import { Navigate, useLocation, useParams } from "react-router-dom";
 
 function CheckAuth({ isAuthenticated, user, children }) {
@@ -14,6 +13,10 @@ function CheckAuth({ isAuthenticated, user, children }) {
   const isShopProtectedPage = ["/checkout", "/account"].some((p) =>
     path.includes(p)
   );
+
+  if (isAuthenticated && !user) {
+    return <div>Loading...</div>;
+  }
 
   // ❌ Nếu chưa đăng nhập nhưng lại vào /verify-email
   if (!isAuthenticated && path.includes("/verify-email")) {

@@ -3,6 +3,7 @@
   "home": "Home",
   "about": "About Us",
   "notfound": "Trang không tìm thấy",
+  "logout": "Log out",
   "register": {
     "h1": "Sign Up",
     "redirect": "Already have an account?",
@@ -20,5 +21,35 @@
     "placeholderEmail": "Enter your email",
     "labelPassword": "Password",
     "placeholderPassword": "Enter your password"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "orders": "Orders",
+    "createProduct": {
+      "h2": "Upload Image",
+      "pTagForImgUpload": "Drag and drop image here or click to upload",
+      "h1": "Add new Product",
+      "titleLabel": "Title",
+      "placeholderTitle": "Enter product title",
+      "descriptionLabel": "Description",
+      "placeholderDescription": "Enter product description",
+      "categoryLabel": "Category",
+      "categoryOptions": {
+        "men": "Men",
+        "women": "Women",
+        "kids": "Kids",
+        "accessories": "Accessories",
+        "footwear": "Footwear"
+      },
+      "brandLabel":"Brand",
+      "priceLabel": "Price",
+      "placeholderPrice": "Enter product price",
+      "salePriceLabel": "Sale Price",
+      "placeholderSalePrice":"Enter product sale price",
+      "stockLabel":"Total Stock",
+      "placeholderStock":"Enter total stock"
+    },
+    "editProduct": "Edit Product"
   }
 }

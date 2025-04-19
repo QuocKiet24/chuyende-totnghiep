@@ -1,25 +1,55 @@
-
 {
   "welcome": "Chào mừng đến với ECommerce Shopping",
-  "home": "Home",
-  "about": "About Us",
+  "home": "Trang chủ",
+  "about": "Về chúng tôi",
   "notfound": "Trang không tìm thấy",
+  "logout": "Đăng xuất",
   "register": {
     "h1": "Đăng ký",
-    "redirect": "Đã có tài khoản?",
-    "labelUserName": "Tên tài khoản",
-    "placeholderUserName": "Nhập tên tài khoản",
+    "redirect": "Đã có tài khoản?",
+    "labelUserName": "Tên người dùng",
+    "placeholderUserName": "Nhập tên người dùng",
     "labelEmail": "Email",
-    "placeholderEmail": "Nhập Email",
+    "placeholderEmail": "Nhập email của bạn",
     "labelPassword": "Mật khẩu",
-    "placeholderPassword": "Nhập mật khẩu"
+    "placeholderPassword": "Nhập mật khẩu của bạn"
   },
   "login": {
     "h1": "Đăng nhập",
     "redirect": "Chưa có tài khoản?",
     "labelEmail": "Email",
-    "placeholderEmail": "Nhập Email",
+    "placeholderEmail": "Nhập email của bạn",
     "labelPassword": "Mật khẩu",
-    "placeholderPassword": "Nhập mật khẩu"
+    "placeholderPassword": "Nhập mật khẩu của bạn"
+  },
+  "admin": {
+    "dashboard": "Thống kê",
+    "products": "Sản phẩm",
+    "orders": "Đơn hàng",
+    "createProduct": {
+      "h2": "Tải hình ảnh lên",
+      "pTagForImgUpload": "Kéo và thả hình ảnh vào đây hoặc nhấp để tải lên",
+      "h1": "Thêm sản phẩm mới",
+      "titleLabel": "Tiêu đề",
+      "placeholderTitle": "Nhập tiêu đề sản phẩm",
+      "descriptionLabel": "Mô tả",
+      "placeholderDescription": "Nhập mô tả sản phẩm",
+      "categoryLabel": "Danh mục",
+      "categoryOptions": {
+        "men": "Nam",
+        "women": "Nữ",
+        "kids": "Trẻ em",
+        "accessories": "Phụ kiện",
+        "footwear": "Giày dép"
+      },
+      "brandLabel": "Thương hiệu",
+      "priceLabel": "Giá",
+      "placeholderPrice": "Nhập giá sản phẩm",
+      "salePriceLabel": "Giá khuyến mãi",
+      "placeholderSalePrice":"Nhập giá khuyến mãi",
+      "stockLabel": "Tồn kho",
+      "placeholderStock": "Nhập số lượng tồn kho"
+    },
+    "editProduct": "Chỉnh sửa sản phẩm"
   }
 }

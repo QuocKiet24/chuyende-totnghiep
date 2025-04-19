@@ -25,10 +25,12 @@ import { getCurrentUser } from "./store/auth-slice";
 
 const AppRoutes = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
+
   return (
     <Routes>
-      {/* Wrapper lang route */}
-      <Route path="/:lang" element={<LanguageLayout />}>
+      {/* Route cho các trường hợp chỉ có ngôn ngữ (ví dụ: /en hoặc /vi) */}
+      <Route path="/:lang" element={<Navigate to={`shop/home`} replace />} />
+      <Route path="/:lang/*" element={<LanguageLayout />}>
         <Route
           path="auth"
           element={
@@ -96,10 +98,16 @@ const AppRoutes = () => {
 
 function App() {
   const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(getCurrentUser());
-  }, []);
+  }, [dispatch]);
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Hoặc loading spinner
+  }
+
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <LanguageSwitcher />
