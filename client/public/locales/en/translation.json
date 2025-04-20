@@ -3,6 +3,16 @@
   "home": "Home",
   "about": "About Us",
   "notfound": "Trang không tìm thấy",
+  "menuitems": {
+    "home": "Home",
+    "products": "Products",
+    "men": "Men",
+    "women": "Women",
+    "kids": "Kids",
+    "footwear": "Footwear",
+    "accessories": "Accessories",
+    "search": "Search"
+  },
   "logout": "Log out",
   "register": {
     "h1": "Sign Up",

@@ -4,6 +4,16 @@
   "about": "Về chúng tôi",
   "notfound": "Trang không tìm thấy",
   "logout": "Đăng xuất",
+  "menuitems": {
+    "home": "Trang chủ",
+    "products": "Sản phẩm",
+    "men": "Nam",
+    "women": "Nữ",
+    "kids": "Trẻ em",
+    "footwear": "Giày dép",
+    "accessories": "Phụ kiện",
+    "search": "Tìm kiếm"
+  },
   "register": {
     "h1": "Đăng ký",
     "redirect": "Đã có tài khoản?",

@@ -1,8 +1,7 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
 import ShoppingHeader from "./header";
 
-const ShoppingLayout = () => {
+function ShoppingLayout() {
   return (
     <div className="flex flex-col bg-white overflow-hidden">
       {/* common header */}
@@ -12,6 +11,6 @@ const ShoppingLayout = () => {
       </main>
     </div>
   );
-};
+}
 
 export default ShoppingLayout;
