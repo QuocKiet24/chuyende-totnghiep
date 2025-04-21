@@ -18,14 +18,27 @@ import { Button } from "@/components/ui/button";
 
 // Config & Services
 import { sortOptions } from "@/config";
-import { fetchAllFilteredProducts } from "@/store/shop/products-slice";
+import {
+  fetchAllFilteredProducts,
+  fetchProductDetails,
+} from "@/store/shop/products-slice";
+import ProductDetailsDialog from "./product-details";
 
 // Utils
 const createSearchParams = (filterParams) => {
-  return Object.entries(filterParams)
-    .filter(([_, value]) => Array.isArray(value) && value.length > 0)
-    .map(([key, value]) => `${key}=${encodeURIComponent(value.join(","))}`)
-    .join("&");
+  const queryParams = [];
+
+  for (const [key, value] of Object.entries(filterParams)) {
+    if (Array.isArray(value) && value.length > 0) {
+      const paramValue = value.join(",");
+
+      queryParams.push(`${key}=${encodeURIComponent(paramValue)}`);
+    }
+  }
+
+  console.log(queryParams, "queryParams");
+
+  return queryParams.join("&");
 };
 
 const ShoppingListing = () => {
@@ -33,11 +46,14 @@ const ShoppingListing = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { productList } = useSelector((state) => state.shopProducts);
-
+  const { productList, productDetails } = useSelector(
+    (state) => state.shopProducts
+  );
+  const categorySearchParam = searchParams.get("category");
   // State
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState("price-lowtohigh");
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
 
   // Handlers
   const handleSort = (value) => {
@@ -67,20 +83,22 @@ const ShoppingListing = () => {
     });
   }, []);
 
+  const handleGetProductDetails = (getCurrentProductId) => {
+    dispatch(fetchProductDetails(getCurrentProductId));
+  };
+
   // Effects
   useEffect(() => {
-    const savedFilters = JSON.parse(sessionStorage.getItem("filters")) || {};
-    setFilters(savedFilters);
-  }, []);
+    setSort("price-lowtohigh");
+    setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
+  }, [categorySearchParam]);
 
   useEffect(() => {
-    if (Object.keys(filters).length > 0) {
-      const queryString = createSearchParams(filters);
-      setSearchParams(new URLSearchParams(queryString));
-    } else {
-      setSearchParams({});
+    if (filters && Object.keys(filters).length > 0) {
+      const createQueryString = createSearchParams(filters);
+      setSearchParams(new URLSearchParams(createQueryString));
     }
-  }, [filters, setSearchParams]);
+  }, [filters]);
 
   useEffect(() => {
     if (filters !== null && sort !== null)
@@ -88,6 +106,10 @@ const ShoppingListing = () => {
         fetchAllFilteredProducts({ filterParams: filters, sortParams: sort })
       );
   }, [dispatch, sort, filters]);
+
+  useEffect(() => {
+    if (productDetails !== null) setOpenDetailsDialog(true);
+  }, [productDetails]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-3 p-4 md:p-6">
@@ -97,7 +119,7 @@ const ShoppingListing = () => {
         <div className="p-4 border-b flex items-center justify-between">
           <h2 className="text-lg font-extrabold">{t("all_products")}</h2>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <span className="text-muted-foreground">
               {productList?.length} {t("products")}
             </span>
@@ -106,8 +128,16 @@ const ShoppingListing = () => {
           </div>
         </div>
 
-        <ProductList products={productList} />
+        <ProductList
+          products={productList}
+          handleGetProductDetails={handleGetProductDetails}
+        />
       </div>
+      <ProductDetailsDialog
+        open={openDetailsDialog}
+        setOpen={setOpenDetailsDialog}
+        productDetails={productDetails}
+      />
     </div>
   );
 };
@@ -132,11 +162,15 @@ const SortDropdown = ({ sort, onSortChange, t }) => (
   </DropdownMenu>
 );
 
-const ProductList = ({ products }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+const ProductList = ({ products, handleGetProductDetails }) => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
     {products?.length > 0
       ? products.map((product) => (
-          <ProductGrid key={product._id} product={product} />
+          <ProductGrid
+            key={product._id}
+            product={product}
+            handleGetProductDetails={handleGetProductDetails}
+          />
         ))
       : null}
   </div>

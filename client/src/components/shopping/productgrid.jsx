@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { useTranslation } from "react-i18next";
 import { formatVnd } from "@/utils/formatVnd";
 
-const ProductGrid = ({ product }) => {
+const ProductGrid = ({ product, handleGetProductDetails }) => {
   const { i18n } = useTranslation();
   const lang = i18n.language || "en";
 
@@ -16,7 +16,7 @@ const ProductGrid = ({ product }) => {
 
   return (
     <Card className="w-full max-w-sm mx-auto">
-      <div>
+      <div onClick={() => handleGetProductDetails(product._id)}>
         <div className="relative">
           <img
             src={product?.image}
