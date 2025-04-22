@@ -6,14 +6,15 @@ export const addToCart = async (req, res) => {
   try {
     const { userId, productId, quantity } = req.body;
 
-    if (!userId || !productId || quantity < 0) {
+    if (!userId || !productId || quantity <= 0) {
       return res.status(400).json({
         success: false,
-        message: "Invalid data provided",
+        message: "Invalid data provided!",
       });
     }
 
     const product = await Product.findById(productId);
+
     if (!product) {
       return res.status(404).json({
         success: false,
@@ -22,6 +23,7 @@ export const addToCart = async (req, res) => {
     }
 
     let cart = await Cart.findOne({ userId });
+
     if (!cart) {
       cart = new Cart({ userId, items: [] });
     }
@@ -45,7 +47,7 @@ export const addToCart = async (req, res) => {
     console.log(error);
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: "Error",
     });
   }
 };
@@ -57,12 +59,12 @@ export const fetchCartItems = async (req, res) => {
     if (!userId) {
       return res.status(400).json({
         success: false,
-        message: "User id required",
+        message: "User id is manadatory!",
       });
     }
 
     const cart = await Cart.findOne({ userId }).populate({
-      path: "item.productId",
+      path: "items.productId",
       select: "image title price salePrice",
     });
 
@@ -102,10 +104,11 @@ export const fetchCartItems = async (req, res) => {
     console.log(error);
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: "Error",
     });
   }
 };
+
 export const updateCartItemQty = async (req, res) => {
   try {
     const { userId, productId, quantity } = req.body;

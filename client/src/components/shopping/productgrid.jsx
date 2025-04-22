@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { useTranslation } from "react-i18next";
 import { formatVnd } from "@/utils/formatVnd";
 
-const ProductGrid = ({ product, handleGetProductDetails }) => {
+const ProductGrid = ({ product, handleGetProductDetails, handleAddToCart }) => {
   const { i18n } = useTranslation();
   const lang = i18n.language || "en";
 
@@ -74,7 +74,12 @@ const ProductGrid = ({ product, handleGetProductDetails }) => {
             Out of Stock
           </Button>
         ) : (
-          <Button className="w-full">Add to Cart</Button>
+          <Button
+            onClick={() => handleAddToCart(product?._id)}
+            className="w-full"
+          >
+            Add to Cart
+          </Button>
         )}
       </CardFooter>
     </Card>

@@ -23,6 +23,8 @@ import {
   fetchProductDetails,
 } from "@/store/shop/products-slice";
 import ProductDetailsDialog from "./product-details";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
+import { toast } from "sonner";
 
 // Utils
 const createSearchParams = (filterParams) => {
@@ -49,6 +51,7 @@ const ShoppingListing = () => {
   const { productList, productDetails } = useSelector(
     (state) => state.shopProducts
   );
+  const { user } = useSelector((state) => state.auth);
   const categorySearchParam = searchParams.get("category");
   // State
   const [filters, setFilters] = useState({});
@@ -85,6 +88,21 @@ const ShoppingListing = () => {
 
   const handleGetProductDetails = (getCurrentProductId) => {
     dispatch(fetchProductDetails(getCurrentProductId));
+  };
+
+  const handleAddToCart = (getCurrentProductId) => {
+    dispatch(
+      addToCart({
+        userId: user?._id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?._id));
+        toast.success("Added to Cart");
+      }
+    });
   };
 
   // Effects
@@ -131,6 +149,7 @@ const ShoppingListing = () => {
         <ProductList
           products={productList}
           handleGetProductDetails={handleGetProductDetails}
+          handleAddToCart={handleAddToCart}
         />
       </div>
       <ProductDetailsDialog
@@ -162,7 +181,11 @@ const SortDropdown = ({ sort, onSortChange, t }) => (
   </DropdownMenu>
 );
 
-const ProductList = ({ products, handleGetProductDetails }) => (
+const ProductList = ({
+  products,
+  handleGetProductDetails,
+  handleAddToCart,
+}) => (
   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
     {products?.length > 0
       ? products.map((product) => (
@@ -170,6 +193,7 @@ const ProductList = ({ products, handleGetProductDetails }) => (
             key={product._id}
             product={product}
             handleGetProductDetails={handleGetProductDetails}
+            handleAddToCart={handleAddToCart}
           />
         ))
       : null}

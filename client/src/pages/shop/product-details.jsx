@@ -3,21 +3,44 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
+import { setProductDetails } from "@/store/shop/products-slice";
 import { formatVnd } from "@/utils/formatVnd";
 import { StarIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 
 const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
   const { i18n } = useTranslation();
   const lang = i18n.language || "en";
+  const dispatch = useDispatch();
+
+  const { user } = useSelector((state) => state.auth);
 
   const handleDialogClose = () => {
     setOpen(false);
+    dispatch(setProductDetails());
+  };
+
+  const handleAddToCart = (getCurrentProductId) => {
+    dispatch(
+      addToCart({
+        userId: user?._id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?._id));
+        toast.success("Added to Cart");
+      }
+    });
   };
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
-      <DialogTitle>abc</DialogTitle>
+      <DialogTitle></DialogTitle>
       <DialogContent className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[70vw]">
         <div className="relative overflow-hidden rounded-lg">
           <img
@@ -62,7 +85,12 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
             </div>
           </div>
           <div className="mt-5 mb-5">
-            <Button className="w-full">Add to Cart</Button>
+            <Button
+              onClick={() => handleAddToCart(productDetails?._id)}
+              className="w-full"
+            >
+              Add to Cart
+            </Button>
           </div>
           <Separator />
           <div className="max-h-[300px] overflow-auto">
