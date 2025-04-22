@@ -1,7 +1,18 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Globe, ChevronDown } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
-const SUPPORTED_LANGS = ["en", "vi"];
+const SUPPORTED_LANGS = [
+  { code: "en", name: "English" },
+  { code: "vi", name: "Tiếng Việt" },
+];
 
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
@@ -9,7 +20,7 @@ const LanguageSwitcher = () => {
   const location = useLocation();
 
   // Lấy lang hiện tại từ URL
-  const currentLang = location.pathname.split("/")[1]; // ví dụ: /vi/admin => vi
+  const currentLang = location.pathname.split("/")[1];
 
   const changeLanguage = (newLang) => {
     if (currentLang === newLang) return;
@@ -19,26 +30,34 @@ const LanguageSwitcher = () => {
 
     i18n.changeLanguage(newLang);
     localStorage.setItem("i18nextLng", newLang);
-
     navigate(newUrl, { replace: true });
   };
 
+  const currentLanguage =
+    SUPPORTED_LANGS.find((lang) => lang.code === currentLang) ||
+    SUPPORTED_LANGS[0];
+
   return (
-    <div className="flex gap-2">
-      {SUPPORTED_LANGS.map((lng) => (
-        <button
-          key={lng}
-          onClick={() => changeLanguage(lng)}
-          className={`px-4 py-1 rounded transition ${
-            currentLang === lng
-              ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-          }`}
-        >
-          {lng === "en" ? "English" : "Tiếng Việt"}
-        </button>
-      ))}
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm" className="flex items-center gap-1">
+          <Globe className="h-4 w-4" />
+          <span className="hidden sm:inline">{currentLanguage.name}</span>
+          <ChevronDown className="h-4 w-4 opacity-50" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-40">
+        {SUPPORTED_LANGS.map((lang) => (
+          <DropdownMenuItem
+            key={lang.code}
+            onClick={() => changeLanguage(lang.code)}
+            className={currentLang === lang.code ? "bg-accent" : ""}
+          >
+            {lang.name}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 

@@ -17,20 +17,12 @@ import {
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import Cartwrapper from "./cart-wrapper";
 import { fetchCartItems } from "@/store/shop/cart-slice";
+import LanguageSwitcher from "../language/ChangeLanguage";
+import { Label } from "../ui/label";
 
 const ShoppingViewHeaderMenuItems = () => {
   const { t } = useTranslation();
   return [
-    {
-      id: "home",
-      label: t("menuitems.home"),
-      path: "/shop/home",
-    },
-    {
-      id: "products",
-      label: t("menuitems.products"),
-      path: "/shop/listing",
-    },
     {
       id: "men",
       label: t("menuitems.men"),
@@ -56,11 +48,6 @@ const ShoppingViewHeaderMenuItems = () => {
       label: t("menuitems.accessories"),
       path: "/shop/listing",
     },
-    {
-      id: "search",
-      label: t("menuitems.search"),
-      path: "/shop/search",
-    },
   ];
 };
 
@@ -83,6 +70,7 @@ const HeaderRightContent = () => {
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
+      <LanguageSwitcher />
       <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
         <Button
           onClick={() => setOpenCartSheet(true)}
@@ -103,7 +91,7 @@ const HeaderRightContent = () => {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Avatar className="bg-black">
+          <Avatar className="bg-black cursor-pointer">
             <AvatarFallback className="bg-black text-white font-extrabold">
               {user?.userName[0].toUpperCase()}
             </AvatarFallback>
@@ -128,16 +116,29 @@ const HeaderRightContent = () => {
 };
 
 const MenuItems = () => {
+  const navigate = useNavigate();
+  const handleNavigate = (getCurrentMenuItem) => {
+    sessionStorage.removeItem("filters");
+    const currentFilter =
+      getCurrentMenuItem.id !== "home"
+        ? {
+            category: [getCurrentMenuItem.id],
+          }
+        : null;
+
+    sessionStorage.setItem("filters", JSON.stringify(currentFilter));
+    navigate(getCurrentMenuItem.path);
+  };
   return (
     <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
       {ShoppingViewHeaderMenuItems().map((menuItem) => (
-        <Link
-          className="text-sm font-medium"
+        <Label
+          onClick={() => handleNavigate(menuItem)}
+          className="text-lg font-semibold cursor-pointer"
           key={menuItem.id}
-          to={menuItem.path}
         >
           {menuItem.label}
-        </Link>
+        </Label>
       ))}
     </nav>
   );

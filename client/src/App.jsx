@@ -9,7 +9,6 @@ import AdminFeatures from "./pages/admin/features";
 import AdminOrders from "./pages/admin/orders";
 import AdminProducts from "./pages/admin/products";
 import LanguageLayout from "./components/language/languge";
-import LanguageSwitcher from "./components/language/ChangeLanguage";
 import ShoppingLayout from "./components/shopping/layout";
 import NotFound from "./pages/not-found";
 import ShoppingHome from "./pages/shop/home";
@@ -110,7 +109,6 @@ function App() {
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
-      <LanguageSwitcher />
       <AppRoutes />
     </div>
   );
