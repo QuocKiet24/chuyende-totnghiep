@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/select";
 import { getProvinces, getDistricts, getWards } from "vietnam-provinces";
 
-const AddressSelector = ({ onAddressChange }) => {
+const AddressSelector = ({ onAddressChange, value }) => {
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedWard, setSelectedWard] = useState("");
@@ -16,20 +16,49 @@ const AddressSelector = ({ onAddressChange }) => {
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
 
-  // Load tất cả tỉnh/thành phố
   const allProvinces = getProvinces();
 
-  // Khi chọn tỉnh/thành phố
+  // Helper functions
+  const findByCode = (list, code) => list.find((item) => item.code === code);
+  const findByName = (list, name) => list.find((item) => item.name === name);
+
+  // Handle default value from props
+  useEffect(() => {
+    if (!value) return; // Dừng nếu `value` là null hoặc undefined
+    if (value.province && value.district && value.ward) {
+      const provinceMatch = findByName(allProvinces, value.province);
+      if (provinceMatch) {
+        setSelectedProvince(provinceMatch.code);
+        const provinceDistricts = getDistricts(provinceMatch.code);
+        setDistricts(provinceDistricts);
+
+        const districtMatch = findByName(provinceDistricts, value.district);
+        if (districtMatch) {
+          setSelectedDistrict(districtMatch.code);
+          const districtWards = getWards(districtMatch.code);
+          setWards(districtWards);
+
+          const wardMatch = findByName(districtWards, value.ward);
+          if (wardMatch) {
+            setSelectedWard(wardMatch.code);
+          }
+        }
+      }
+    }
+  }, [value]);
+
   useEffect(() => {
     if (selectedProvince) {
       const provinceDistricts = getDistricts(selectedProvince);
       setDistricts(provinceDistricts);
+
       setSelectedDistrict("");
+      setWards([]);
       setSelectedWard("");
     }
   }, [selectedProvince]);
 
-  // Khi chọn quận/huyện
+  // Load wards when district changes
   useEffect(() => {
     if (selectedDistrict) {
       const districtWards = getWards(selectedDistrict);
@@ -38,25 +67,31 @@ const AddressSelector = ({ onAddressChange }) => {
     }
   }, [selectedDistrict]);
 
-  // Gửi dữ liệu địa chỉ đã chọn ra ngoài component
   useEffect(() => {
-    if (selectedProvince && selectedDistrict && selectedWard) {
-      const province = allProvinces.find((p) => p.code === selectedProvince);
-      const district = districts.find((d) => d.code === selectedDistrict);
-      const ward = wards.find((w) => w.code === selectedWard);
+    const province = allProvinces.find((p) => p.code === selectedProvince);
+    const provinceDistricts = selectedProvince
+      ? getDistricts(selectedProvince)
+      : [];
+    const district = provinceDistricts.find((d) => d.code === selectedDistrict);
+    const districtWards = selectedDistrict ? getWards(selectedDistrict) : [];
+    const ward = districtWards.find((w) => w.code === selectedWard);
 
+    if (province && district && ward) {
       onAddressChange({
         province: province.name,
         district: district.name,
         ward: ward.name,
         fullAddress: `${ward.name}, ${district.name}, ${province.name}`,
       });
+    } else {
+      // Gửi null nếu chưa đầy đủ hoặc không hợp lệ
+      onAddressChange(null);
     }
   }, [selectedProvince, selectedDistrict, selectedWard]);
 
   return (
     <div className="space-y-4">
-      {/* Chọn Tỉnh/Thành phố */}
+      {/* Province */}
       <div>
         <label className="block text-sm font-medium mb-1">Tỉnh/Thành phố</label>
         <Select onValueChange={setSelectedProvince} value={selectedProvince}>
@@ -65,7 +100,7 @@ const AddressSelector = ({ onAddressChange }) => {
           </SelectTrigger>
           <SelectContent>
             {allProvinces.map((province) => (
-              <SelectItem key={province.code} value={province.code}>
+              <SelectItem key={String(province.code)} value={province.code}>
                 {province.name}
               </SelectItem>
             ))}
@@ -73,7 +108,7 @@ const AddressSelector = ({ onAddressChange }) => {
         </Select>
       </div>
 
-      {/* Chọn Quận/Huyện */}
+      {/* District */}
       <div>
         <label className="block text-sm font-medium mb-1">Quận/Huyện</label>
         <Select
@@ -86,7 +121,7 @@ const AddressSelector = ({ onAddressChange }) => {
           </SelectTrigger>
           <SelectContent>
             {districts.map((district) => (
-              <SelectItem key={district.code} value={district.code}>
+              <SelectItem key={String(district.code)} value={district.code}>
                 {district.name}
               </SelectItem>
             ))}
@@ -94,7 +129,7 @@ const AddressSelector = ({ onAddressChange }) => {
         </Select>
       </div>
 
-      {/* Chọn Phường/Xã */}
+      {/* Ward */}
       <div>
         <label className="block text-sm font-medium mb-1">Phường/Xã</label>
         <Select
@@ -107,13 +142,22 @@ const AddressSelector = ({ onAddressChange }) => {
           </SelectTrigger>
           <SelectContent>
             {wards.map((ward) => (
-              <SelectItem key={ward.code} value={ward.code}>
+              <SelectItem key={String(ward.code)} value={ward.code}>
                 {ward.name}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
+
+      {/* Display full address */}
+      {selectedProvince && selectedDistrict && selectedWard && (
+        <p className="text-sm text-muted-foreground mt-2">
+          Địa chỉ: {findByCode(wards, selectedWard)?.name},{" "}
+          {findByCode(districts, selectedDistrict)?.name},{" "}
+          {findByCode(allProvinces, selectedProvince)?.name}
+        </p>
+      )}
     </div>
   );
 };
