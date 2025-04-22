@@ -1,9 +1,10 @@
+import OrdersAdmin from "@/components/admin/admin-orders";
 import React from "react";
 
 const AdminOrders = () => {
   return (
     <div>
-      <h1>AdminOrders</h1>
+      <OrdersAdmin />
     </div>
   );
 };

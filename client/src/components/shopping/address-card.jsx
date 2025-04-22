@@ -22,7 +22,7 @@ function AddressCard({
           : "border-black"
       }`}
     >
-      <CardContent className="grid p-4 gap-4">
+      <CardContent className="grid gap-4">
         <Label>Address: {addressInfo?.address}</Label>
         <Label>City: {addressInfo?.province}</Label>
         <Label>District: {addressInfo?.district}</Label>
@@ -30,7 +30,7 @@ function AddressCard({
         <Label>Phone: {addressInfo?.phone}</Label>
         <Label>Notes: {addressInfo?.notes}</Label>
       </CardContent>
-      <CardFooter className="p-3 flex justify-between">
+      <CardFooter className="flex justify-between">
         <Button onClick={() => handleEditAddress(addressInfo)}>Edit</Button>
         <Button onClick={() => handleDeleteAddress(addressInfo)}>Delete</Button>
       </CardFooter>

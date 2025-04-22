@@ -3,8 +3,10 @@ import { SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
 import { Button } from "../ui/button";
 import CartItem from "./cart-content";
 import { formatVnd } from "@/utils/formatVnd";
+import { useNavigate } from "react-router-dom";
 
-const Cartwrapper = ({ cartItems }) => {
+const Cartwrapper = ({ cartItems, setOpenCartSheet }) => {
+  const navigate = useNavigate();
   const totalCartAmount =
     cartItems && cartItems.length > 0
       ? cartItems.reduce(
@@ -36,7 +38,15 @@ const Cartwrapper = ({ cartItems }) => {
           <span className="font-bold">{formatVnd(totalCartAmount)}</span>
         </div>
       </div>
-      <Button className="w-full">Checkout</Button>
+      <Button
+        onClick={() => {
+          navigate("/shop/checkout");
+          setOpenCartSheet(false);
+        }}
+        className="w-full"
+      >
+        Checkout
+      </Button>
     </SheetContent>
   );
 };

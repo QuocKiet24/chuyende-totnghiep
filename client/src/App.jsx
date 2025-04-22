@@ -21,6 +21,8 @@ import EmailVerificationPage from "./pages/auth/verifyEmail";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getCurrentUser } from "./store/auth-slice";
+import PaypalReturnPage from "./pages/shop/paypal-return";
+import PaymentSuccessPage from "./pages/shop/paypal-success";
 
 const AppRoutes = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -65,6 +67,22 @@ const AppRoutes = () => {
             element={
               <CheckAuth isAuthenticated={isAuthenticated} user={user}>
                 <ShoppingCheckout />
+              </CheckAuth>
+            }
+          />
+          <Route
+            path="paypal-return"
+            element={
+              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                <PaypalReturnPage />
+              </CheckAuth>
+            }
+          />{" "}
+          <Route
+            path="payment-success"
+            element={
+              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                <PaymentSuccessPage />
               </CheckAuth>
             }
           />
