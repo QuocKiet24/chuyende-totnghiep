@@ -1,5 +1,5 @@
+import api from "@/utils/api";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 
 const token = localStorage.getItem("userToken");
 
@@ -13,11 +13,9 @@ const initialState = {
 export const registerUser = createAsyncThunk(
   "/auth/register",
   async (formData) => {
-    const response = await axios.post(
-      "http://localhost:5000/api/auth/register",
-      formData,
-      { withCredentials: true }
-    );
+    const response = await api.post("/auth/register", formData, {
+      withCredentials: true,
+    });
 
     const { token, user } = response.data;
     localStorage.setItem("userToken", token);
@@ -27,11 +25,9 @@ export const registerUser = createAsyncThunk(
 );
 
 export const loginUser = createAsyncThunk("/auth/login", async (formData) => {
-  const response = await axios.post(
-    "http://localhost:5000/api/auth/login",
-    formData,
-    { withCredentials: true }
-  );
+  const response = await api.post("/auth/login", formData, {
+    withCredentials: true,
+  });
 
   const { token, user } = response.data;
   localStorage.setItem("userToken", token);
@@ -46,14 +42,11 @@ export const getCurrentUser = createAsyncThunk(
       const token = localStorage.getItem("userToken");
       if (!token) return rejectWithValue("No token");
 
-      const response = await axios.get(
-        "http://localhost:5000/api/auth/check-auth",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.get("/auth/check-auth", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       return response.data.user;
     } catch (err) {
@@ -68,8 +61,8 @@ export const verifyEmail = createAsyncThunk(
   "auth/verifyEmail",
   async (code, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/verify-email",
+      const response = await api.post(
+        "/auth/verify-email",
         { code },
         { withCredentials: true }
       );
@@ -96,8 +89,8 @@ export const sendOTP = createAsyncThunk(
       const token = localStorage.getItem("userToken");
       if (!token) return rejectWithValue("No token found");
 
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/send-otp",
+      const response = await api.post(
+        "/auth/send-otp",
         {},
         {
           headers: {
