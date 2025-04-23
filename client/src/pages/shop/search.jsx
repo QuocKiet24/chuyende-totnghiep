@@ -75,7 +75,7 @@ const SearchProduct = () => {
       ).then((data) => {
         if (data?.payload?.success) {
           dispatch(fetchCartItems(user?._id));
-          toast.success("Product added to cart");
+          toast.success("Đã thêm vào giỏ hàng");
         }
       });
     },

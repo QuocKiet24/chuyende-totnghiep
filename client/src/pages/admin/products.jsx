@@ -62,14 +62,14 @@ const AdminProducts = () => {
       ).then((data) => {
         if (data?.payload?.success) {
           resetForm();
-          toast.success("Product updated successfully");
+          toast.success("Sửa sản phẩm thành công");
         }
       });
     } else {
       dispatch(addNewProduct(finalFormData)).then((data) => {
         if (data?.payload?.success) {
           resetForm();
-          toast.success("Product added successfully");
+          toast.success("Thêm sản phẩm thành công");
         }
       });
     }
@@ -79,7 +79,7 @@ const AdminProducts = () => {
     dispatch(deleteProduct(getCurrentProductId)).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchAllProducts());
-        toast.success("Product deleted successfully");
+        toast.success("Xóa sản phẩm thành công");
       }
     });
   }

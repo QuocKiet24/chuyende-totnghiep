@@ -36,7 +36,7 @@ const AuthRegister = () => {
     try {
       dispatch(registerUser(formData)).then((data) => {
         if (data.meta.requestStatus === "fulfilled") {
-          toast.success("Register successfully");
+          toast.success("Đăng ký thành công");
           navigate(`/${locale}/auth/login`);
         } else {
           toast.error(data.payload?.message || "Register failed");

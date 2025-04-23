@@ -38,7 +38,7 @@ const CartItem = ({ cartItem }) => {
         if (indexOfCurrentCartItem > -1) {
           const getQuantity = getCartItems[indexOfCurrentCartItem].quantity;
           if (getQuantity + 1 > getTotalStock) {
-            toast.error(`Only ${getQuantity} item in stock`);
+            toast.error(`Chỉ ${getQuantity} sản phẩm`);
 
             return;
           }
@@ -57,7 +57,7 @@ const CartItem = ({ cartItem }) => {
       })
     ).then((data) => {
       if (data?.payload?.success) {
-        toast.success("Cart item is updated successfully");
+        toast.success("Cập nhật giỏ hàng thành công");
       }
     });
   }

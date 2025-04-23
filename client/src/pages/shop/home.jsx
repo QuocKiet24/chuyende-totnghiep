@@ -79,7 +79,7 @@ const ShoppingHome = () => {
 
   const handleAddToCart = (id) => {
     if (!user?._id) {
-      toast.error("Please login to add items to cart");
+      toast.error("Đăng nhập để thêm giỏ hàng");
       navigate(`/${locale}/auth/login`);
       return;
     }
@@ -87,7 +87,7 @@ const ShoppingHome = () => {
       (data) => {
         if (data?.payload?.success) {
           dispatch(fetchCartItems(user._id));
-          toast.success("Product added to cart");
+          toast.success("Đã thêm vào giỏ hàng");
         }
       }
     );

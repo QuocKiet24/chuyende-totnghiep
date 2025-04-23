@@ -56,7 +56,7 @@ const EmailVerificationPage = () => {
     const res = await dispatch(verifyEmail(verificationCode));
 
     if (verifyEmail.fulfilled.match(res)) {
-      toast.success("Email verified successfully");
+      toast.success("Xác thực email thành công");
       navigate(`/${locale}/`);
     } else {
       toast.error(res.payload?.message || "Verification failed");
@@ -82,7 +82,7 @@ const EmailVerificationPage = () => {
 
   const handleLogout = useCallback(() => {
     dispatch(logout());
-    toast.success("You have been logged out successfully.");
+    toast.success("Đã đăng xuất");
     navigate(`/${locale}/auth/login`);
   }, [dispatch, navigate, locale]);
 

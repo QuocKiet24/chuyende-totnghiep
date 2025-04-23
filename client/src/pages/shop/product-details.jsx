@@ -78,7 +78,7 @@ const ProductDetailsDialog = ({
     ).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user?._id));
-        toast.success("Added To Cart");
+        toast.success("Đã thêm vào giỏ hàng");
       }
     });
   }
@@ -101,7 +101,7 @@ const ProductDetailsDialog = ({
       })
     ).then((action) => {
       if (addReview.fulfilled.match(action)) {
-        toast.success("Review added successfully!");
+        toast.success("Đã gửi đánh giá");
         setRating(0);
         setReviewMsg("");
         dispatch(getReviews(productDetails?._id));
@@ -113,9 +113,9 @@ const ProductDetailsDialog = ({
         const errorMessage = action.payload?.message || action.error?.message;
 
         if (errorMessage.includes("purchase product")) {
-          toast.error("You need to purchase this product before reviewing it.");
+          toast.error("Bạn phải mua sản phẩm trước khi đánh giá!");
         } else if (errorMessage.includes("already reviewed")) {
-          toast.error("You have already reviewed this product!");
+          toast.error("Bạn đã đánh giá sản phẩm này rồi!");
         } else {
           toast.error(errorMessage || "Failed to add review");
         }

@@ -101,9 +101,7 @@ const ShoppingListing = () => {
       if (indexOfCurrentItem > -1) {
         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
         if (getQuantity + 1 > getTotalStock) {
-          toast.error(
-            `Only ${getQuantity} quantity can be added for this item`
-          );
+          toast.error(`Chỉ có thể thêm ${getQuantity} cho sản phẩm này`);
 
           return;
         }
@@ -118,7 +116,7 @@ const ShoppingListing = () => {
     ).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user?._id));
-        toast.success("Added to Cart");
+        toast.success("Đã thêm vào giỏ hàng");
       }
     });
   };

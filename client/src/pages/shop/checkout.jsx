@@ -34,13 +34,13 @@ const ShoppingCheckout = () => {
 
   const handleInitiatePaypalPayment = () => {
     if (cartItems.length === 0) {
-      toast.error("Your cart is empty.");
+      toast.error("Giỏ hàng rỗng.");
 
       return;
     }
 
     if (currentSelectedAddress === null) {
-      toast.error("Please select one address to proceed.");
+      toast.error("Chọn 1 địa chỉ để thanh toán.");
 
       return;
     }

@@ -37,7 +37,7 @@ const AuthLogin = () => {
     try {
       const data = await dispatch(loginUser(formData));
       if (data.meta.requestStatus === "fulfilled") {
-        toast.success("Login successful");
+        toast.success("Đã đăng nhập");
         navigate(`/${locale}/auth/verify-email`);
       } else {
         toast.error(data.payload?.message || "Login failed");

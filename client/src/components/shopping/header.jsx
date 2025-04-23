@@ -66,7 +66,7 @@ const HeaderRightContent = () => {
   const { locale } = useParams();
   const handleLogout = useCallback(() => {
     dispatch(logout());
-    toast.success("You have been logged out successfully.");
+    toast.success("Đã đăng xuất.");
     navigate(`/${locale}/auth/login`);
   }, [dispatch, navigate, locale]);
 
