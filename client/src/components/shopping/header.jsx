@@ -1,6 +1,11 @@
 import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,36 +24,25 @@ import Cartwrapper from "./cart-wrapper";
 import { fetchCartItems } from "@/store/shop/cart-slice";
 import LanguageSwitcher from "../language/ChangeLanguage";
 import { Label } from "../ui/label";
+import { toast } from "sonner";
+import { motion } from "framer-motion";
 
-const ShoppingViewHeaderMenuItems = () => {
+const useShoppingMenuItems = () => {
   const { t } = useTranslation();
-  return [
-    {
-      id: "men",
-      label: t("menuitems.men"),
-      path: "/shop/listing",
-    },
-    {
-      id: "women",
-      label: t("menuitems.women"),
-      path: "/shop/listing",
-    },
-    {
-      id: "kids",
-      label: t("menuitems.kids"),
-      path: "/shop/listing",
-    },
-    {
-      id: "footwear",
-      label: t("menuitems.footwear"),
-      path: "/shop/listing",
-    },
-    {
-      id: "accessories",
-      label: t("menuitems.accessories"),
-      path: "/shop/listing",
-    },
-  ];
+  return React.useMemo(
+    () => [
+      { id: "men", label: t("menuitems.men"), path: "/shop/listing" },
+      { id: "women", label: t("menuitems.women"), path: "/shop/listing" },
+      { id: "kids", label: t("menuitems.kids"), path: "/shop/listing" },
+      { id: "footwear", label: t("menuitems.footwear"), path: "/shop/listing" },
+      {
+        id: "accessories",
+        label: t("menuitems.accessories"),
+        path: "/shop/listing",
+      },
+    ],
+    [t]
+  );
 };
 
 const HeaderRightContent = () => {
@@ -57,10 +51,11 @@ const HeaderRightContent = () => {
   const [openCartSheet, setOpenCartSheet] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     dispatch(logout());
+    toast.success("You have been logged out successfully.");
     navigate("/auth/login");
-  };
+  }, [dispatch, navigate]);
 
   useEffect(() => {
     if (user?._id) {
@@ -72,14 +67,17 @@ const HeaderRightContent = () => {
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
       <LanguageSwitcher />
       <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
-        <Button
-          onClick={() => setOpenCartSheet(true)}
-          variant="outline"
-          size="icon"
-        >
-          <ShoppingCart className="size-6" />
-          <span className="sr-only">User cart</span>
-        </Button>
+        <motion.div whileHover={{ rotate: -10 }} whileTap={{ scale: 0.9 }}>
+          <Button
+            onClick={() => setOpenCartSheet(true)}
+            variant="outline"
+            size="icon"
+          >
+            <ShoppingCart className="size-6" />
+            <span className="sr-only">User cart</span>
+          </Button>
+        </motion.div>
+
         <Cartwrapper
           setOpenCartSheet={setOpenCartSheet}
           cartItems={
@@ -116,34 +114,51 @@ const HeaderRightContent = () => {
   );
 };
 
-const MenuItems = () => {
+function MenuItems() {
   const navigate = useNavigate();
-  const handleNavigate = (getCurrentMenuItem) => {
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const menuItems = useShoppingMenuItems();
+
+  function handleNavigate(getCurrentMenuItem) {
     sessionStorage.removeItem("filters");
     const currentFilter =
-      getCurrentMenuItem.id !== "home"
+      getCurrentMenuItem.id !== "home" &&
+      getCurrentMenuItem.id !== "products" &&
+      getCurrentMenuItem.id !== "search"
         ? {
             category: [getCurrentMenuItem.id],
           }
         : null;
 
     sessionStorage.setItem("filters", JSON.stringify(currentFilter));
-    navigate(getCurrentMenuItem.path);
-  };
+
+    location.pathname.includes("listing") && currentFilter !== null
+      ? setSearchParams(
+          new URLSearchParams(`?category=${getCurrentMenuItem.id}`)
+        )
+      : navigate(getCurrentMenuItem.path);
+  }
+
   return (
     <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
-      {ShoppingViewHeaderMenuItems().map((menuItem) => (
-        <Label
-          onClick={() => handleNavigate(menuItem)}
-          className="text-lg font-semibold cursor-pointer"
+      {menuItems.map((menuItem) => (
+        <motion.div
           key={menuItem.id}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
-          {menuItem.label}
-        </Label>
+          <Label
+            onClick={() => handleNavigate(menuItem)}
+            className="text-sm font-medium cursor-pointer"
+          >
+            {menuItem.label}
+          </Label>
+        </motion.div>
       ))}
     </nav>
   );
-};
+}
 
 const ShoppingHeader = () => {
   return (

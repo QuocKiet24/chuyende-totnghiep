@@ -38,8 +38,6 @@ const createSearchParams = (filterParams) => {
     }
   }
 
-  console.log(queryParams, "queryParams");
-
   return queryParams.join("&");
 };
 
@@ -51,6 +49,7 @@ const ShoppingListing = () => {
   const { productList, productDetails } = useSelector(
     (state) => state.shopProducts
   );
+  const { cartItems } = useSelector((state) => state.shopCart);
   const { user } = useSelector((state) => state.auth);
   const categorySearchParam = searchParams.get("category");
   // State
@@ -90,7 +89,24 @@ const ShoppingListing = () => {
     dispatch(fetchProductDetails(getCurrentProductId));
   };
 
-  const handleAddToCart = (getCurrentProductId) => {
+  const handleAddToCart = (getCurrentProductId, getTotalStock) => {
+    let getCartItems = cartItems.items || [];
+
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCurrentProductId
+      );
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getTotalStock) {
+          toast.error(
+            `Only ${getQuantity} quantity can be added for this item`
+          );
+
+          return;
+        }
+      }
+    }
     dispatch(
       addToCart({
         userId: user?._id,
@@ -128,6 +144,8 @@ const ShoppingListing = () => {
   useEffect(() => {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
+
+  console.log(productList);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-3 p-4 md:p-6">

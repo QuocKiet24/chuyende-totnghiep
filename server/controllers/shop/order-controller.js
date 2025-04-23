@@ -1,6 +1,7 @@
 import paypal from "../../helpers/paypal.js";
 import Order from "../../models/Order.js";
 import Cart from "../../models/Cart.js";
+import Product from "../../models/Product.js";
 
 export const createOrder = async (req, res) => {
   try {
@@ -74,7 +75,7 @@ export const createOrder = async (req, res) => {
           orderStatus,
           paymentMethod,
           paymentStatus,
-          totalAmount: amountUSD,
+          totalAmount,
           orderDate,
           orderUpdateDate,
           paymentId,
@@ -117,6 +118,20 @@ export const capturePayment = async (req, res) => {
     order.paymentId = paymentId;
     order.payerId = payerId;
 
+    for (let item of order.cartItems) {
+      let product = await Product.findById(item.productId);
+
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message: `not enough stock for this product ${product.title.en}`,
+        });
+      }
+
+      product.totalStock -= item.quantity;
+      await product.save();
+    }
+
     const getCartId = order.cartId;
     await Cart.findByIdAndDelete(getCartId);
 
@@ -125,6 +140,56 @@ export const capturePayment = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Order Confirmed",
+      data: order,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
+export const getAllOrdersByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const orders = await Order.find({ userId });
+
+    if (!orders.length) {
+      res.status(404).json({
+        success: false,
+        message: "No orders found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: orders,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
+export const getOrderDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const order = await Order.findById(id);
+
+    if (!order) {
+      res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
       data: order,
     });
   } catch (error) {
