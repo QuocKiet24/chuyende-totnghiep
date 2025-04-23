@@ -3,13 +3,14 @@ import { SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
 import { Button } from "../ui/button";
 import CartItem from "./cart-content";
 import { formatVnd } from "@/utils/formatVnd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const Cartwrapper = ({ cartItems, setOpenCartSheet }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { locale } = useParams();
 
   const totalCartAmount = cartItems?.reduce(
     (sum, item) => sum + (item?.salePrice || item?.price) * item.quantity,
@@ -56,7 +57,7 @@ const Cartwrapper = ({ cartItems, setOpenCartSheet }) => {
 
           <Button
             onClick={() => {
-              navigate("/shop/checkout");
+              navigate(`/${locale}/shop/checkout`);
               setOpenCartSheet(false);
             }}
             className="w-full py-6 text-md font-bold"

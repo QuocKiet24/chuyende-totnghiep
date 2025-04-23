@@ -1,7 +1,7 @@
 import { logout, sendOTP, verifyEmail } from "@/store/auth-slice";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { motion } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ const EmailVerificationPage = () => {
   const [seconds, setSeconds] = useState(59);
 
   const navigate = useNavigate();
+  const { locale } = useParams();
   const dispatch = useDispatch();
   const inputRefs = useRef([]);
 
@@ -56,7 +57,7 @@ const EmailVerificationPage = () => {
 
     if (verifyEmail.fulfilled.match(res)) {
       toast.success("Email verified successfully");
-      navigate("/");
+      navigate(`/${locale}/`);
     } else {
       toast.error(res.payload?.message || "Verification failed");
 
@@ -82,8 +83,8 @@ const EmailVerificationPage = () => {
   const handleLogout = useCallback(() => {
     dispatch(logout());
     toast.success("You have been logged out successfully.");
-    navigate("/auth/login");
-  }, [dispatch, navigate]);
+    navigate(`/${locale}/auth/login`);
+  }, [dispatch, navigate, locale]);
 
   useEffect(() => {
     if (code.every((digit) => digit !== "")) {

@@ -5,7 +5,7 @@ import { registerUser } from "@/store/auth-slice";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import {
   Card,
@@ -27,6 +27,7 @@ const AuthRegister = () => {
   const [formData, setFormData] = useState(initialState);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { locale } = useParams();
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = (e) => {
@@ -36,7 +37,7 @@ const AuthRegister = () => {
       dispatch(registerUser(formData)).then((data) => {
         if (data.meta.requestStatus === "fulfilled") {
           toast.success("Register successfully");
-          navigate("/auth/login");
+          navigate(`/${locale}/auth/login`);
         } else {
           toast.error(data.payload?.message || "Register failed");
         }
@@ -66,7 +67,7 @@ const AuthRegister = () => {
           <CardDescription className="text-muted-foreground text-sm">
             {t("register.redirect")}
             <Link
-              to="/auth/login"
+              to={`/${locale}/auth/login`}
               className="font-medium ml-1 text-primary hover:underline"
             >
               {t("login.h1")}

@@ -1,16 +1,20 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const PaymentSuccessPage = () => {
   const navigate = useNavigate();
+  const { locale } = useParams();
   return (
     <Card className="p-10">
       <CardHeader className="p-0">
         <CardTitle className="text-4xl">Payment is successfull!</CardTitle>
       </CardHeader>
-      <Button className="mt-5" onClick={() => navigate("/shop/account")}>
+      <Button
+        className="mt-5"
+        onClick={() => navigate(`/${locale}/shop/account`)}
+      >
         View Orders
       </Button>
     </Card>

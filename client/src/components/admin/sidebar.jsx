@@ -8,43 +8,47 @@ import {
 } from "lucide-react";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
 
-const adminSidebarMenuItems = [
+const AdminSidebarMenuItems = ({ locale }) => [
   {
     id: "shop",
     label: "shop",
-    path: "/shop/home",
+    path: `/${locale}/shop/home`, // Thêm locale vào path
     icon: <StoreIcon />,
   },
-
   {
     id: "banner",
     label: "managebanner",
-    path: "/admin/banners",
+    path: `/${locale}/admin/banners`, // Thêm locale vào path
     icon: <Image />,
   },
   {
     id: "products",
     label: "products",
-    path: "/admin/products",
+    path: `/${locale}/admin/products`, // Thêm locale vào path
     icon: <ShoppingBasket />,
   },
   {
     id: "orders",
     label: "orders",
-    path: "/admin/orders",
+    path: `/${locale}/admin/orders`, // Thêm locale vào path
     icon: <BadgeCheck />,
   },
 ];
 
 function MenuItems({ setOpen }) {
   const navigate = useNavigate();
+  const { locale } = useParams();
   const { t } = useTranslation();
+
+  // Truyền locale vào để tạo menu items
+  const menuItems = AdminSidebarMenuItems({ locale });
+
   return (
     <nav className="mt-8 flex-col flex gap-2">
-      {adminSidebarMenuItems.map((menuItem) => (
+      {menuItems.map((menuItem) => (
         <div
           key={menuItem.id}
           onClick={() => {
@@ -63,6 +67,7 @@ function MenuItems({ setOpen }) {
 
 const AdminSidebar = ({ open, setOpen }) => {
   const navigate = useNavigate();
+  const { locale } = useParams(); // Lấy locale từ URL
 
   return (
     <Fragment>
@@ -81,7 +86,7 @@ const AdminSidebar = ({ open, setOpen }) => {
       </Sheet>
       <aside className="hidden w-64 flex-col border-r bg-background p-6 lg:flex">
         <div
-          onClick={() => navigate("/admin/banners")}
+          onClick={() => navigate(`/${locale}/admin/banners`)} // Thêm locale vào path
           className="flex items-center gap-2 cursor-pointer"
         >
           <ChartNoAxesCombined size={30} />

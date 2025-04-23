@@ -13,6 +13,7 @@ import {
   Link,
   useLocation,
   useNavigate,
+  useParams,
   useSearchParams,
 } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
@@ -62,11 +63,12 @@ const HeaderRightContent = () => {
   const [openCartSheet, setOpenCartSheet] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { locale } = useParams();
   const handleLogout = useCallback(() => {
     dispatch(logout());
     toast.success("You have been logged out successfully.");
-    navigate("/auth/login");
-  }, [dispatch, navigate]);
+    navigate(`/${locale}/auth/login`);
+  }, [dispatch, navigate, locale]);
 
   useEffect(() => {
     if (user?._id) {
@@ -78,7 +80,7 @@ const HeaderRightContent = () => {
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
       <motion.div whileHover={{ rotate: -10 }} whileTap={{ scale: 0.9 }}>
         <Button
-          onClick={() => navigate("/shop/search")}
+          onClick={() => navigate(`/${locale}/shop/search`)}
           variant="outline"
           size="icon"
         >
@@ -124,14 +126,18 @@ const HeaderRightContent = () => {
           <DropdownMenuContent side="bottom" className="w-56">
             <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate("/shop/account")}>
+            <DropdownMenuItem
+              onClick={() => navigate(`/${locale}/shop/account`)}
+            >
               <UserCog className="mr-2 h-4 w-4" />
               Account
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             {user?.role === "admin" && (
               <>
-                <DropdownMenuItem onClick={() => navigate("/admin/banners")}>
+                <DropdownMenuItem
+                  onClick={() => navigate(`/${locale}/admin/banners`)}
+                >
                   <LayoutDashboardIcon className="mr-2 h-4 w-4" />
                   Admin
                 </DropdownMenuItem>
@@ -148,7 +154,7 @@ const HeaderRightContent = () => {
       ) : (
         <div className="flex flex-1 justify-end">
           <Button
-            onClick={() => navigate("/auth/login")}
+            onClick={() => navigate(`/${locale}/auth/login`)}
             className="inline-flex gap-2 items-center rounded-md px-4 py-2 text-sm font-medium shadow"
           >
             <User2 />
@@ -162,9 +168,16 @@ const HeaderRightContent = () => {
 
 function MenuItems() {
   const navigate = useNavigate();
+  const { locale } = useParams();
   const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams(); // eslint-disable-line no-unused-vars
+  const [searchParams, setSearchParams] = useSearchParams();
   const menuItems = useShoppingMenuItems();
+
+  // Thêm locale vào các path của menuItems
+  const localizedMenuItems = menuItems.map((item) => ({
+    ...item,
+    path: `/${locale}${item.path}`,
+  }));
 
   function handleNavigate(getCurrentMenuItem) {
     sessionStorage.removeItem("filters");
@@ -179,16 +192,19 @@ function MenuItems() {
 
     sessionStorage.setItem("filters", JSON.stringify(currentFilter));
 
-    location.pathname.includes("listing") && currentFilter !== null
-      ? setSearchParams(
-          new URLSearchParams(`?category=${getCurrentMenuItem.id}`)
-        )
-      : navigate(getCurrentMenuItem.path);
+    if (location.pathname.includes("listing") && currentFilter !== null) {
+      setSearchParams(
+        new URLSearchParams(`?category=${getCurrentMenuItem.id}`)
+      );
+    } else {
+      // Đảm bảo navigate đến path đã được localize
+      navigate(getCurrentMenuItem.path);
+    }
   }
 
   return (
     <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
-      {menuItems.map((menuItem) => (
+      {localizedMenuItems.map((menuItem) => (
         <motion.div
           key={menuItem.id}
           whileHover={{ scale: 1.05 }}
@@ -207,10 +223,11 @@ function MenuItems() {
 }
 
 const ShoppingHeader = () => {
+  const { locale } = useParams();
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
-        <Link to="/shop/home" className="flex items-center gap-2">
+        <Link to={`/${locale}/shop/home`} className="flex items-center gap-2">
           <StoreIcon className="h-6 w-6" />
           <span className="font-bold">Ecommerce Shop</span>
         </Link>

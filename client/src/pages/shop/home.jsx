@@ -23,7 +23,7 @@ import {
   fetchProductDetails,
 } from "@/store/shop/products-slice";
 import ProductGrid from "@/components/shopping/productgrid";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ProductDetailsDialog from "./product-details";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { toast } from "sonner";
@@ -57,6 +57,7 @@ const ShoppingHome = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { locale } = useParams();
   const { productList, productDetails } = useSelector(
     (state) => state.shopProducts
   );
@@ -69,7 +70,7 @@ const ShoppingHome = () => {
   const handleNavigateToListingPage = (item, section) => {
     sessionStorage.removeItem("filters");
     sessionStorage.setItem("filters", JSON.stringify({ [section]: [item.id] }));
-    navigate(`/shop/listing`);
+    navigate(`/${locale}/shop/listing`);
   };
 
   const handleGetProductDetails = (id) => {
@@ -79,7 +80,7 @@ const ShoppingHome = () => {
   const handleAddToCart = (id) => {
     if (!user?._id) {
       toast.error("Please login to add items to cart");
-      navigate("/auth/login");
+      navigate(`/${locale}/auth/login`);
       return;
     }
     dispatch(addToCart({ userId: user._id, productId: id, quantity: 1 })).then(

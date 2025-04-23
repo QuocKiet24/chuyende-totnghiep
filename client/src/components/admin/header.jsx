@@ -4,17 +4,17 @@ import { AlignJustify, LogOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { logout } from "@/store/auth-slice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import LanguageSwitcher from "../language/ChangeLanguage";
 
 const AdminHeader = ({ setOpen }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const navigate = useNavigate();
-
+  const { locale } = useParams();
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/auth/login");
+    navigate(`/${locale}/auth/login`);
   };
   return (
     <header className="flex items-center justify-between px-4 py-3 bg-background border-b">
