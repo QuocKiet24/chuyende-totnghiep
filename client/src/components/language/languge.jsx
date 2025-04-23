@@ -5,20 +5,24 @@ import { useTranslation } from "react-i18next";
 const SUPPORTED_LANGS = ["en-US", "vi-VN"];
 
 const LanguageLayout = () => {
-  const { lang } = useParams();
+  const { locale } = useParams(); // Đổi từ 'lang' thành 'locale' để nhất quán
   const { i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (!SUPPORTED_LANGS.includes(lang)) {
+    if (!SUPPORTED_LANGS.includes(locale)) {
       const fallbackLang = localStorage.getItem("i18nextLng") || "en-US";
-      navigate(`/${fallbackLang}${location.pathname}`, { replace: true });
+      const newPath = location.pathname.replace(
+        `/${locale}`,
+        `/${fallbackLang}`
+      );
+      navigate(newPath, { replace: true });
     } else {
-      i18n.changeLanguage(lang);
-      localStorage.setItem("i18nextLng", lang);
+      i18n.changeLanguage(locale);
+      localStorage.setItem("i18nextLng", locale);
     }
-  }, [lang]);
+  }, [locale, navigate, location.pathname, i18n]);
 
   return <Outlet />;
 };

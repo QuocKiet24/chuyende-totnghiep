@@ -27,14 +27,24 @@ import SearchProduct from "./pages/shop/search";
 
 const AppRoutes = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const currentLanguage = localStorage.getItem("i18nextLng") || "en-US";
 
   return (
     <Routes>
-      {/* Route cho các trường hợp chỉ có ngôn ngữ (ví dụ: /en hoặc /vi) */}
-      <Route path="/:locale" element={<Navigate to={`shop/home`} replace />} />
+      {/* Redirect root to default language */}
+      <Route
+        path="/"
+        element={<Navigate to={`/${currentLanguage}/shop/home`} replace />}
+      />
+
+      {/* Redirect bare locale to home */}
+      <Route path="/:locale" element={<Navigate to="shop/home" replace />} />
+
+      {/* Main routes with locale prefix */}
       <Route path="/:locale/*" element={<LanguageLayout />}>
+        {/* Auth routes */}
         <Route
-          path="auth"
+          path="auth/*"
           element={
             <CheckAuth isAuthenticated={isAuthenticated} user={user}>
               <AuthLayout />
@@ -46,8 +56,9 @@ const AppRoutes = () => {
           <Route path="verify-email" element={<EmailVerificationPage />} />
         </Route>
 
+        {/* Admin routes */}
         <Route
-          path="admin"
+          path="admin/*"
           element={
             <CheckAuth isAuthenticated={isAuthenticated} user={user}>
               <AdminLayout />
@@ -55,13 +66,14 @@ const AppRoutes = () => {
           }
         >
           <Route path="banners" element={<BannerDashboard />} />
-
           <Route path="features" element={<AdminFeatures />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="products" element={<AdminProducts />} />
         </Route>
 
+        {/* Shop routes */}
         <Route path="shop" element={<ShoppingLayout />}>
+          <Route index element={<ShoppingHome />} />
           <Route path="home" element={<ShoppingHome />} />
           <Route path="listing" element={<ShoppingListing />} />
           <Route path="search" element={<SearchProduct />} />
@@ -80,7 +92,7 @@ const AppRoutes = () => {
                 <PaypalReturnPage />
               </CheckAuth>
             }
-          />{" "}
+          />
           <Route
             path="payment-success"
             element={
@@ -98,19 +110,15 @@ const AppRoutes = () => {
             }
           />
         </Route>
+
         <Route path="unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>
 
-      {/* Redirect fallback */}
+      {/* Fallback for unknown routes */}
       <Route
         path="*"
-        element={
-          <Navigate
-            to={`/${localStorage.getItem("i18nextLng") || "en-US"}/shop/home`}
-            replace
-          />
-        }
+        element={<Navigate to={`/${currentLanguage}/shop/home`} replace />}
       />
     </Routes>
   );
