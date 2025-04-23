@@ -1,10 +1,16 @@
-import { sendOTP, verifyEmail } from "@/store/auth-slice";
-import { useEffect, useRef, useState } from "react";
+import { logout, sendOTP, verifyEmail } from "@/store/auth-slice";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { motion } from "framer-motion"; // eslint-disable-line no-unused-vars
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTranslation } from "react-i18next";
 
 const EmailVerificationPage = () => {
+  const { t } = useTranslation();
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [minutes, setMinutes] = useState(1);
   const [seconds, setSeconds] = useState(59);
@@ -13,30 +19,25 @@ const EmailVerificationPage = () => {
   const dispatch = useDispatch();
   const inputRefs = useRef([]);
 
-  const { isLoading, error } = useSelector((state) => state.auth);
+  const { isLoading } = useSelector((state) => state.auth);
 
   const handleChange = (index, value) => {
     const newCode = [...code];
 
-    // Handle pasted content
     if (value.length > 1) {
       const pastedCode = value.slice(0, 6).split("");
       for (let i = 0; i < 6; i++) {
         newCode[i] = pastedCode[i] || "";
       }
       setCode(newCode);
-
-      // Focus on the last non-empty input or the first empty one
       const lastFilledIndex = newCode.findLastIndex((digit) => digit !== "");
       const focusIndex = lastFilledIndex < 5 ? lastFilledIndex + 1 : 5;
-      inputRefs.current[focusIndex].focus();
+      inputRefs.current[focusIndex]?.focus();
     } else {
       newCode[index] = value;
       setCode(newCode);
-
-      // Move focus to the next input field if value is entered
       if (value && index < 5) {
-        inputRefs.current[index + 1].focus();
+        inputRefs.current[index + 1]?.focus();
       }
     }
   };
@@ -69,7 +70,7 @@ const EmailVerificationPage = () => {
   const handleSendOtp = async () => {
     try {
       const res = await dispatch(sendOTP()).unwrap();
-      toast.success(res); // Hiển thị "OTP sent successfully"
+      toast.success(res);
       setMinutes(1);
       setSeconds(59);
     } catch (err) {
@@ -77,6 +78,12 @@ const EmailVerificationPage = () => {
       toast.error("Failed to resend OTP");
     }
   };
+
+  const handleLogout = useCallback(() => {
+    dispatch(logout());
+    toast.success("You have been logged out successfully.");
+    navigate("/auth/login");
+  }, [dispatch, navigate]);
 
   useEffect(() => {
     if (code.every((digit) => digit !== "")) {
@@ -95,64 +102,81 @@ const EmailVerificationPage = () => {
         clearInterval(interval);
       }
     }, 1000);
-
     return () => clearInterval(interval);
   }, [seconds, minutes]);
 
   return (
-    <div className="container">
-      <div className="p-8 w-full max-w-md">
-        <h2 className="form-title">Verify Your Email</h2>
-        <p className="text-center text-gray-300 mb-6">
-          Enter the 6-digit code sent to your email address.
-        </p>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex justify-between">
-            {code.map((digit, index) => (
-              <input
-                key={index}
-                type="text"
-                maxLength={1}
-                value={digit}
-                ref={(el) => (inputRefs.current[index] = el)}
-                onChange={(e) => handleChange(index, e.target.value)}
-                onKeyDown={(e) => handleKeyDown(e, index)}
-                className="w-12 h-12 text-center text-2xl font-bold bg-gray-700 text-white border-2 border-gray-600 rounded-lg focus:border-green-500 focus:outline-none"
-              />
-            ))}
-          </div>
-          {error && <p className="text-red-500 mt-4 font-semibold">{error}</p>}
-          <button
-            type="submit"
-            className="btn"
-            disabled={isLoading || code.some((digit) => !digit)}
-          >
-            {isLoading ? "Verifying..." : "Verify Email"}
-          </button>
-          <div className="flex items-center justify-between mb-6">
-            <p className="text-sm text-gray-300">
-              Time Remaining:{" "}
-              <span className="font-medium">
-                {minutes < 10 ? `0${minutes}` : minutes}:
-                {seconds < 10 ? `0${seconds}` : seconds}
-              </span>
-            </p>
-            <button
-              disabled={seconds > 0 || minutes > 0}
-              type="button"
-              onClick={handleSendOtp}
-              className={
-                seconds > 0 || minutes > 0
-                  ? "text-gray-300 cursor-wait"
-                  : "text-green-500 underline cursor-pointer"
-              }
+    <motion.div
+      className="flex justify-center items-center min-h-screen bg-background"
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Card className="w-full max-w-md p-6 shadow-xl rounded-2xl">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">{t("verifyEmail.title")}</CardTitle>
+          <p className="text-muted-foreground text-sm">
+            {t("verifyEmail.desc")}
+          </p>
+        </CardHeader>
+
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex justify-between gap-2">
+              {code.map((digit, index) => (
+                <Input
+                  key={index}
+                  type="text"
+                  maxLength={1}
+                  value={digit}
+                  ref={(el) => (inputRefs.current[index] = el)}
+                  onChange={(e) => handleChange(index, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                  className="w-10 h-12 text-center text-xl font-bold"
+                />
+              ))}
+            </div>
+
+            <Button
+              type="submit"
+              disabled={isLoading || code.some((digit) => !digit)}
+              className="w-full"
             >
-              Resend OTP
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+              {t("verifyEmail.buttonText")}
+            </Button>
+            <Button
+              variant="outline"
+              type="button"
+              onClick={handleLogout}
+              className="w-full"
+            >
+              {t("verifyEmail.backButton")}
+            </Button>
+            <div className="flex items-center justify-between text-sm">
+              <p>
+                {t("verifyEmail.timeText")}:{" "}
+                <span className="font-semibold">
+                  {minutes < 10 ? `0${minutes}` : minutes}:
+                  {seconds < 10 ? `0${seconds}` : seconds}
+                </span>
+              </p>
+              <button
+                type="button"
+                onClick={handleSendOtp}
+                disabled={minutes > 0 || seconds > 0}
+                className={`${
+                  minutes > 0 || seconds > 0
+                    ? "text-muted-foreground cursor-not-allowed"
+                    : "text-foreground underline"
+                }`}
+              >
+                {t("verifyEmail.otpBtn")}:{" "}
+              </button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 };
 

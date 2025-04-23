@@ -14,25 +14,27 @@ function CheckAuth({ isAuthenticated, user, children }) {
     path.includes(p)
   );
 
+  // ⏳ Chờ user nếu đang xác thực nhưng chưa có user object
   if (isAuthenticated && !user) {
-    return <div>Loading...</div>;
+    return <div>Đang tải thông tin người dùng...</div>;
   }
 
-  // ❌ Nếu chưa đăng nhập nhưng lại vào /verify-email
-  if (!isAuthenticated && path.includes("/verify-email")) {
-    return <Navigate to={`/${lang}/auth/login`} replace />;
-  }
-
-  // ✅ Nếu người dùng đã login nhưng chưa xác minh email
+  // ✅ Redirect bắt buộc đến trang verify email nếu chưa xác minh
   if (
     isAuthenticated &&
+    user &&
     isVerified === false &&
     !path.includes("/verify-email")
   ) {
     return <Navigate to={`/${lang}/auth/verify-email`} replace />;
   }
 
-  // ✅ Nếu path là gốc /vi hoặc /en
+  // ❌ Chưa login mà vào /verify-email
+  if (!isAuthenticated && path.includes("/verify-email")) {
+    return <Navigate to={`/${lang}/auth/login`} replace />;
+  }
+
+  // ✅ Redirect root
   if (path === `/${lang}` || path === `/${lang}/`) {
     if (!isAuthenticated) {
       return <Navigate to={`/${lang}/shop/home`} replace />;
@@ -45,17 +47,14 @@ function CheckAuth({ isAuthenticated, user, children }) {
     );
   }
 
-  // ✅ Nếu chưa login và truy cập trang checkout hoặc account của shop
   if (!isAuthenticated && path.includes("shop") && isShopProtectedPage) {
     return <Navigate to={`/${lang}/auth/login`} replace />;
   }
 
-  // ✅ Nếu chưa login và truy cập trang admin
   if (!isAuthenticated && path.includes("admin")) {
     return <Navigate to={`/${lang}/auth/login`} replace />;
   }
 
-  // ✅ Nếu đã login nhưng đang ở trang auth
   if (isAuthenticated && isAuthPage && isVerified !== false) {
     return (
       <Navigate
@@ -65,7 +64,6 @@ function CheckAuth({ isAuthenticated, user, children }) {
     );
   }
 
-  // ✅ Nếu user không phải admin mà vào trang admin
   if (isAuthenticated && role !== "admin" && path.includes("admin")) {
     return <Navigate to={`/${lang}/unauth-page`} replace />;
   }

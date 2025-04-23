@@ -38,7 +38,16 @@
     "labelPassword": "Password",
     "placeholderPassword": "Enter your password"
   },
+  "verifyEmail":{
+    "title": "Verify your email",
+    "desc":"Enter the 6-digit code sent to your email.",
+    "buttonText": "Verify email",
+    "backButton": "Back to Login",
+    "timeText": "Time remaining",
+    "otpBtn": "Resend OTP"
+  },
   "admin": {
+    "shop": "Shop",
     "dashboard": "Dashboard",
     "products": "Products",
     "orders": "Orders",

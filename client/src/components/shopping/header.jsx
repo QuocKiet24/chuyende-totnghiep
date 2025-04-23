@@ -1,9 +1,11 @@
 import {
-  HousePlug,
+  LayoutDashboardIcon,
   LogOut,
   Menu,
   Search,
   ShoppingCart,
+  StoreIcon,
+  User2,
   UserCog,
 } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -53,6 +55,7 @@ const useShoppingMenuItems = () => {
 };
 
 const HeaderRightContent = () => {
+  const { t } = useTranslation();
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const [openCartSheet, setOpenCartSheet] = useState(false);
@@ -108,29 +111,50 @@ const HeaderRightContent = () => {
           }
         />
       </Sheet>
+      {user?._id ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar className="bg-black cursor-pointer">
+              <AvatarFallback className="bg-black text-white font-extrabold">
+                {user?.userName[0].toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="bottom" className="w-56">
+            <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate("/shop/account")}>
+              <UserCog className="mr-2 h-4 w-4" />
+              Account
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            {user?.role === "admin" && (
+              <>
+                <DropdownMenuItem onClick={() => navigate("/admin/dashboard")}>
+                  <LayoutDashboardIcon className="mr-2 h-4 w-4" />
+                  Admin
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
+            )}
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Avatar className="bg-black cursor-pointer">
-            <AvatarFallback className="bg-black text-white font-extrabold">
-              {user?.userName[0].toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent side="bottom" className="w-56">
-          <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/shop/account")}>
-            <UserCog className="mr-2 h-4 w-4" />
-            Account
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Logout
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            <DropdownMenuItem onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        <div className="flex flex-1 justify-end">
+          <Button
+            onClick={() => navigate("/auth/login")}
+            className="inline-flex gap-2 items-center rounded-md px-4 py-2 text-sm font-medium shadow"
+          >
+            <User2 />
+            {t("login.h1")}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
@@ -186,8 +210,8 @@ const ShoppingHeader = () => {
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
         <Link to="/shop/home" className="flex items-center gap-2">
-          <HousePlug className="h-6 w-6" />
-          <span className="font-bold">Ecommerce</span>
+          <StoreIcon className="h-6 w-6" />
+          <span className="font-bold">Ecommerce Shop</span>
         </Link>
         <Sheet>
           <SheetTrigger asChild>

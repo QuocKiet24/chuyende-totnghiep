@@ -3,6 +3,7 @@ import {
   ChartNoAxesCombined,
   LayoutDashboard,
   ShoppingBasket,
+  StoreIcon,
 } from "lucide-react";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
@@ -10,6 +11,12 @@ import { useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
 
 const adminSidebarMenuItems = [
+  {
+    id: "shop",
+    label: "shop",
+    path: "/shop/home",
+    icon: <StoreIcon />,
+  },
   {
     id: "dashboard",
     label: "dashboard",

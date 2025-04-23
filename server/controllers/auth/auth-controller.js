@@ -207,9 +207,29 @@ export const login = async (req, res) => {
 
       user.verificationToken = verificationToken;
       user.verificationTokenExpiresAt = tokenExpiresAt;
-
       await user.save();
-      await sendVerificationEmail(user.email, user.name, verificationToken);
+
+      try {
+        await sendVerificationEmail(user.email, user.name, verificationToken);
+      } catch (emailError) {
+        console.error("Error sending verification email:", emailError);
+        return res.status(500).json({
+          success: false,
+          message: "Could not send verification email",
+        });
+      }
+
+      // ✅ Generate token ngay cả khi chưa verify
+      const payload = {
+        user: {
+          id: user._id,
+          role: user.role,
+        },
+      };
+
+      const token = jwt.sign(payload, process.env.JWT_SECRET, {
+        expiresIn: "40h",
+      });
 
       return res.status(200).json({
         success: true,
@@ -218,7 +238,8 @@ export const login = async (req, res) => {
           ...user._doc,
           password: undefined,
         },
-        requiresVerification: true, // Indicates that the user needs to verify
+        token,
+        requiresVerification: true,
       });
     }
 

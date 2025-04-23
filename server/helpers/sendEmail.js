@@ -50,6 +50,7 @@ const sendEmail = async (
     context: {
       name: name,
       link: link,
+      subject,
     },
   };
 

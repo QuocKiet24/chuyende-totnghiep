@@ -17,6 +17,7 @@ const CommonForm = ({
   setFormData,
   onSubmit,
   buttonText,
+  isLoading,
 }) => {
   const renderInputsByComponentType = (getControlItem) => {
     const value = formData[getControlItem.name] || "";
@@ -120,7 +121,7 @@ const CommonForm = ({
         ))}
       </div>
       <Button type="submit" className="mt-5 w-full">
-        {buttonText || "Submit"}
+        {isLoading ? "Loading..." : buttonText || "Submit"}
       </Button>
     </form>
   );

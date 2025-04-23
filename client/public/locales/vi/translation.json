@@ -47,7 +47,16 @@
     "labelPassword": "Mật khẩu",
     "placeholderPassword": "Nhập mật khẩu của bạn"
   },
+  "verifyEmail":{
+    "title": "Xác minh email của bạn",
+    "desc":"Nhập mã gồm 6 chữ số được gửi đến email của bạn.",
+    "buttonText": "Xác minh email",
+    "backButton": "Quay lại trang đăng nhập",
+    "timeText": "Thời gian còn lại",
+    "otpBtn": "Gửi lại mã"
+  },
   "admin": {
+    "shop": "Cửa hàng",
     "dashboard": "Thống kê",
     "products": "Sản phẩm",
     "orders": "Đơn hàng",
@@ -76,5 +85,8 @@
       "placeholderStock": "Nhập số lượng tồn kho"
     },
     "editProduct": "Chỉnh sửa sản phẩm"
+  },
+  "homePage": {
+    
   }
 }
