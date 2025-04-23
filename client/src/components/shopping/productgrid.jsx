@@ -114,7 +114,9 @@ const ProductGrid = ({ product, handleGetProductDetails, handleAddToCart }) => {
               </span>
             </div>
           </div>
-          <p className="text-muted-foreground mt-2 ">({reviewCount} Reviews)</p>
+          <p className="text-muted-foreground mt-2 ">
+            ({reviewCount} {t("reviewcount")})
+          </p>
           {/* Pricing */}
           <div className="flex items-center justify-between mt-2">
             <div className="flex items-baseline gap-2">

@@ -14,10 +14,10 @@ export const searchProducts = async (req, res) => {
 
     const createSearchQuery = {
       $or: [
-        { "title.vi": regEx },
-        { "title.en": regEx },
-        { "description.vi": regEx },
-        { "description.en": regEx },
+        { "title.vi-VN": regEx },
+        { "title.en-US": regEx },
+        { "description.vi-VN": regEx },
+        { "description.en-US": regEx },
         { category: regEx },
         { brand: regEx },
       ],
