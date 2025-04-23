@@ -7,12 +7,10 @@ import { Button } from "@/components/ui/button";
 import { createNewOrder } from "@/store/shop/order-slice";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 
 const ShoppingCheckout = () => {
   const { i18n } = useTranslation();
   const lang = i18n.resolvedLanguage || "en-US";
-  const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const { cartItems } = useSelector((state) => state.shopCart);
@@ -89,7 +87,7 @@ const ShoppingCheckout = () => {
   console.log(approvalURL);
 
   if (approvalURL) {
-    navigate(approvalURL);
+    window.location.href(approvalURL);
   }
 
   return (
