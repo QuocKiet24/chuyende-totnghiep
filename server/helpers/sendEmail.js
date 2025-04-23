@@ -9,23 +9,22 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const sendEmail = async (
+const sendEmail = async ({
   subject,
   send_to,
   send_from,
   reply_to,
   template,
-  name,
-  link
-) => {
+  context,
+}) => {
   const transporter = nodeMailer.createTransport({
     service: "gmail",
     host: "smtp.gmail.com",
     port: 587,
     secure: false,
     auth: {
-      user: process.env.USER_EMAIL, //sender email
-      pass: process.env.EMAIL_PASS, //app password from gmail
+      user: process.env.USER_EMAIL,
+      pass: process.env.EMAIL_PASS,
     },
   });
 
@@ -47,11 +46,7 @@ const sendEmail = async (
     replyTo: reply_to,
     subject: subject,
     template: template,
-    context: {
-      name: name,
-      link: link,
-      subject,
-    },
+    context: context, // ✅ dùng object context như bạn truyền vào
   };
 
   try {

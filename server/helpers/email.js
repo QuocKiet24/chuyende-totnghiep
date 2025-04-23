@@ -5,27 +5,25 @@ export const sendVerificationEmail = async (
   userName,
   verificationToken
 ) => {
-  // verification link
-  const verificationLink = verificationToken;
-
   // send email
   const subject = "Email Verification - Nhom 4 E-shop";
   const send_to = email;
   const reply_to = "noreply@gmail.com";
   const template = "emailVerification";
   const send_from = process.env.USER_EMAIL;
-  const name = userName;
-  const link = verificationLink;
   try {
-    const response = await sendEmail(
+    const response = await sendEmail({
       subject,
       send_to,
       send_from,
       reply_to,
       template,
-      name,
-      link
-    );
+      context: {
+        name: userName,
+        subject,
+        code: verificationToken,
+      },
+    });
     console.log("Email sent successfully", response);
   } catch (error) {
     console.error(`Error sending verification`, error);
@@ -44,22 +42,53 @@ export const sendPasswordResetEmail = async (resetToken, email, userName) => {
   const reply_to = "noreply@gmail.com";
   const template = "forgotPassword";
   const send_from = process.env.USER_EMAIL;
-  const name = userName;
-  const link = verificationLink;
   try {
-    const response = await sendEmail(
+    const response = await sendEmail({
       subject,
       send_to,
       send_from,
       reply_to,
       template,
-      name,
-      link
-    );
+      context: {
+        name: userName,
+        link: verificationLink,
+      },
+    });
     console.log("Email sent successfully", response);
   } catch (error) {
     console.error(`Error sending verification`, error);
 
     throw new Error(`Error sending verification email: ${error}`);
+  }
+};
+
+export const sendOrderConfirmationEmail = async (
+  email,
+  userName,
+  orderDetails
+) => {
+  const subject = `Order Confirmation #${orderDetails.orderId}`;
+  const send_to = email;
+  const reply_to = "noreply@eshop.com";
+  const template = "orderConfirmation";
+  const send_from = process.env.USER_EMAIL;
+
+  try {
+    const response = await sendEmail({
+      subject,
+      send_to,
+      send_from,
+      reply_to,
+      template,
+      context: {
+        customerName: userName,
+        ...orderDetails,
+      },
+    });
+    console.log("Order confirmation email sent successfully", response);
+    return response;
+  } catch (error) {
+    console.error("Error sending order confirmation email", error);
+    throw new Error(`Error sending order confirmation email: ${error}`);
   }
 };
