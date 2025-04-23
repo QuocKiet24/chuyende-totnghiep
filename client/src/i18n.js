@@ -9,6 +9,8 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: "en",
+    supportedLngs: ["en", "vi"], // chỉ cho phép 2 ngôn ngữ
+    load: "languageOnly", // loại bỏ phần -US, -VN
     debug: false,
     interpolation: {
       escapeValue: false,
