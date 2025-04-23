@@ -1,4 +1,11 @@
-import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
+import {
+  HousePlug,
+  LogOut,
+  Menu,
+  Search,
+  ShoppingCart,
+  UserCog,
+} from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Link,
@@ -65,6 +72,16 @@ const HeaderRightContent = () => {
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
+      <motion.div whileHover={{ rotate: -10 }} whileTap={{ scale: 0.9 }}>
+        <Button
+          onClick={() => navigate("/shop/search")}
+          variant="outline"
+          size="icon"
+        >
+          <Search className="size-6" />
+          <span className="sr-only">Search</span>
+        </Button>
+      </motion.div>
       <LanguageSwitcher />
       <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
         <motion.div whileHover={{ rotate: -10 }} whileTap={{ scale: 0.9 }}>

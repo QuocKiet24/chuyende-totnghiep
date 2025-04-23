@@ -23,6 +23,7 @@ import { useEffect } from "react";
 import { getCurrentUser } from "./store/auth-slice";
 import PaypalReturnPage from "./pages/shop/paypal-return";
 import PaymentSuccessPage from "./pages/shop/paypal-success";
+import SearchProduct from "./pages/shop/search";
 
 const AppRoutes = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -62,6 +63,7 @@ const AppRoutes = () => {
         <Route path="shop" element={<ShoppingLayout />}>
           <Route path="home" element={<ShoppingHome />} />
           <Route path="listing" element={<ShoppingListing />} />
+          <Route path="search" element={<SearchProduct />} />
           <Route
             path="checkout"
             element={
