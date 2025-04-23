@@ -17,7 +17,7 @@ export const addProductReview = async (req, res) => {
     if (!order) {
       return res.status(403).json({
         success: false,
-        message: "You need to purchase the product to review it.",
+        message: "Bạn phải mua để đánh giá sản phẩm này.",
       });
     }
 
@@ -27,7 +27,7 @@ export const addProductReview = async (req, res) => {
     if (existingReview) {
       return res.status(400).json({
         success: false,
-        message: "You already reviewed this product!",
+        message: "Bạn đã đánh giá sản phẩm này rồi!",
       });
     }
 
