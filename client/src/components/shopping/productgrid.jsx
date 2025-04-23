@@ -15,7 +15,7 @@ import StarRatingComponent from "../common/star-rating";
 
 const ProductGrid = ({ product, handleGetProductDetails, handleAddToCart }) => {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language || "en";
+  const lang = i18n.resolvedLanguage || "en-US";
 
   const discountPercentage =
     product?.salePrice > 0

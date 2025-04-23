@@ -10,8 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 
 const SUPPORTED_LANGS = [
-  { code: "en", name: "English" },
-  { code: "vi", name: "Tiếng Việt" },
+  { code: "en-US", name: "English" },
+  { code: "vi-VN", name: "Tiếng Việt" },
 ];
 
 const LanguageSwitcher = () => {

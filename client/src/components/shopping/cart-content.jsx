@@ -9,7 +9,8 @@ import { toast } from "sonner";
 
 const CartItem = ({ cartItem }) => {
   const { i18n } = useTranslation();
-  const lang = i18n.language || "en";
+  const lang = i18n.resolvedLanguage || "en-US";
+
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);

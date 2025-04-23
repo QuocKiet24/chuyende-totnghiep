@@ -11,7 +11,7 @@ const ProductCard = ({
   isLoading = false,
 }) => {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language || "en";
+  const lang = i18n.resolvedLanguage || "en-US";
 
   const priceDisplay = (price) => `₫${price?.toLocaleString() || "0"}`;
 

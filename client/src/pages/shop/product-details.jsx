@@ -28,7 +28,7 @@ const ProductDetailsDialog = ({
   sort,
 }) => {
   const { i18n, t } = useTranslation();
-  const lang = i18n.language || "en";
+  const lang = i18n.resolvedLanguage || "en-US";
 
   const [rating, setRating] = useState(0);
   const [reviewMsg, setReviewMsg] = useState("");

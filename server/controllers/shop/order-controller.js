@@ -20,7 +20,7 @@ export const createOrder = async (req, res) => {
       paymentId,
       payerId,
       cartId,
-      lang = "en", // fallback mặc định nếu không có lang
+      lang = "en-US", // fallback mặc định nếu không có lang
     } = req.body;
 
     // Tỉ giá VND -> USD (có thể update theo tỷ giá thực tế)

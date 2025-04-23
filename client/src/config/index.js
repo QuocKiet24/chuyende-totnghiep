@@ -58,7 +58,7 @@ export const useAddProductFormElements = () => {
       name: "title",
       componentType: "input",
       isMultilang: true,
-      langs: ["vi", "en"],
+      langs: ["vi-VN", "en-US"],
       placeholder: t("admin.createProduct.placeholderTitle"),
     },
     {
@@ -66,7 +66,7 @@ export const useAddProductFormElements = () => {
       name: "description",
       componentType: "textarea",
       isMultilang: true,
-      langs: ["vi", "en"],
+      langs: ["vi-VN", "en-US"],
       placeholder: t("admin.createProduct.placeholderDescription"),
     },
     {

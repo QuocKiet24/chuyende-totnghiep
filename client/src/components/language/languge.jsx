@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useParams, useNavigate, useLocation, Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-const SUPPORTED_LANGS = ["en", "vi"];
+const SUPPORTED_LANGS = ["en-US", "vi-VN"];
 
 const LanguageLayout = () => {
   const { lang } = useParams();
@@ -12,7 +12,7 @@ const LanguageLayout = () => {
 
   useEffect(() => {
     if (!SUPPORTED_LANGS.includes(lang)) {
-      const fallbackLang = localStorage.getItem("i18nextLng") || "en";
+      const fallbackLang = localStorage.getItem("i18nextLng") || "en-US";
       navigate(`/${fallbackLang}${location.pathname}`, { replace: true });
     } else {
       i18n.changeLanguage(lang);

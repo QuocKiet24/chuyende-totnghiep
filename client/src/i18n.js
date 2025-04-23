@@ -8,9 +8,8 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: "en",
-    supportedLngs: ["en", "vi"], // chỉ cho phép 2 ngôn ngữ
-    load: "languageOnly", // loại bỏ phần -US, -VN
+    fallbackLng: "en-US", // fallback chính xác
+    supportedLngs: ["en-US", "vi-VN"], // danh sách ngôn ngữ hỗ trợ
     debug: false,
     interpolation: {
       escapeValue: false,

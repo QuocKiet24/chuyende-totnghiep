@@ -31,8 +31,8 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Route cho các trường hợp chỉ có ngôn ngữ (ví dụ: /en hoặc /vi) */}
-      <Route path="/:lang" element={<Navigate to={`shop/home`} replace />} />
-      <Route path="/:lang/*" element={<LanguageLayout />}>
+      <Route path="/:locale" element={<Navigate to={`shop/home`} replace />} />
+      <Route path="/:locale/*" element={<LanguageLayout />}>
         <Route
           path="auth"
           element={
@@ -107,7 +107,7 @@ const AppRoutes = () => {
         path="*"
         element={
           <Navigate
-            to={`/${localStorage.getItem("i18nextLng") || "en"}/shop/home`}
+            to={`/${localStorage.getItem("i18nextLng") || "en-US"}/shop/home`}
             replace
           />
         }
