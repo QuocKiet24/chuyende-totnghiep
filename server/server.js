@@ -15,12 +15,6 @@ import shopSearchRouter from "./routes/shop/search-route.js";
 import shopReviewRouter from "./routes/shop/review-route.js";
 import commonFeatureRouter from "./routes/common/feature-route.js";
 
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 dotenv.config();
 
 mongoose
@@ -46,8 +40,6 @@ app.use(
   })
 );
 
-app.use(express.static(path.join(__dirname, "client", "dist")));
-
 app.use(cookieParser());
 app.use(express.json());
 app.use("/api/auth", authRouter);
@@ -62,9 +54,5 @@ app.use("/api/shop/address", shopAddressRouter);
 app.use("/api/shop/order", shopOrderRouter);
 app.use("/api/shop/search", shopSearchRouter);
 app.use("/api/shop/review", shopReviewRouter);
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
-});
 
 app.listen(PORT, () => console.log(`Server đang chạy trên port ${PORT}`));
