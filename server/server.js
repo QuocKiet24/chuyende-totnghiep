@@ -13,6 +13,7 @@ import shopAddressRouter from "./routes/shop/address-route.js";
 import shopOrderRouter from "./routes/shop/order-route.js";
 import shopSearchRouter from "./routes/shop/search-route.js";
 import shopReviewRouter from "./routes/shop/review-route.js";
+import commonFeatureRouter from "./routes/common/feature-route.js";
 
 dotenv.config();
 
@@ -44,6 +45,8 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/admin/products", adminProductsRouter);
 app.use("/api/admin/orders", adminOrderRouter);
+
+app.use("/api/common/feature", commonFeatureRouter);
 
 app.use("/api/shop/products", shopProductsRouter);
 app.use("/api/shop/cart", shopCartRouter);
