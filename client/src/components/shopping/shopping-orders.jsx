@@ -34,79 +34,97 @@ const ShoppingOrders = () => {
 
   useEffect(() => {
     dispatch(getAllOrdersByUserId(user?._id));
-  }, [dispatch]);
+  }, [dispatch, user?._id]);
 
   useEffect(() => {
     if (orderDetails !== null) setOpenDetailsDialog(true);
   }, [orderDetails]);
 
-  console.log(orderList);
-
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("admin.order.h1")}</CardTitle>
+    <Card className="overflow-hidden">
+      <CardHeader className="px-4 py-3 sm:px-6 sm:py-4">
+        <CardTitle className="text-lg sm:text-xl md:text-2xl">
+          {t("admin.order.h1")}
+        </CardTitle>
       </CardHeader>
-      <CardContent>
-        <Table>
+      <CardContent className="p-0 overflow-x-auto">
+        <Table className="min-w-[600px]">
           <TableHeader>
             <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>{t("admin.order.date")}</TableHead>
-              <TableHead>{t("admin.order.status")}</TableHead>
-              <TableHead>{t("admin.order.price")}</TableHead>
-
-              <TableHead>
+              <TableHead className="w-[120px] px-3 py-2 sm:px-4 sm:py-3">
+                ID
+              </TableHead>
+              <TableHead className="px-3 py-2 sm:px-4 sm:py-3">
+                {t("admin.order.date")}
+              </TableHead>
+              <TableHead className="px-3 py-2 sm:px-4 sm:py-3">
+                {t("admin.order.status")}
+              </TableHead>
+              <TableHead className="px-3 py-2 sm:px-4 sm:py-3">
+                {t("admin.order.price")}
+              </TableHead>
+              <TableHead className="px-3 py-2 sm:px-4 sm:py-3">
                 <span className="sr-only">Details</span>
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orderList && orderList.length > 0
-              ? orderList.map((orderItem) => (
-                  <TableRow key={orderItem?._id}>
-                    <TableCell>{orderItem?._id}</TableCell>
-                    <TableCell>
-                      {" "}
-                      {new Date(orderItem?.orderDate).toLocaleDateString(
-                        "vi-VN"
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        className={`py-1 px-3 ${
-                          orderItem?.orderStatus === "confirmed"
-                            ? "bg-green-500"
-                            : orderItem?.orderStatus === "rejected"
-                            ? "bg-red-600"
-                            : "bg-black"
-                        }`}
+            {orderList && orderList.length > 0 ? (
+              orderList.map((orderItem) => (
+                <TableRow key={orderItem?._id} className="hover:bg-gray-50">
+                  <TableCell className="px-3 py-2 sm:px-4 sm:py-3 font-medium text-sm sm:text-base truncate max-w-[120px]">
+                    {orderItem?._id}
+                  </TableCell>
+                  <TableCell className="px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base">
+                    {new Date(orderItem?.orderDate).toLocaleDateString("vi-VN")}
+                  </TableCell>
+                  <TableCell className="px-3 py-2 sm:px-4 sm:py-3">
+                    <Badge
+                      className={`py-1 px-2 sm:px-3 text-xs sm:text-sm ${
+                        orderItem?.orderStatus === "confirmed"
+                          ? "bg-green-500"
+                          : orderItem?.orderStatus === "rejected"
+                          ? "bg-red-600"
+                          : "bg-black"
+                      }`}
+                    >
+                      {orderItem?.orderStatus}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base">
+                    {formatVnd(orderItem?.totalAmount)}
+                  </TableCell>
+                  <TableCell className="px-3 py-2 sm:px-4 sm:py-3 text-right">
+                    <Dialog
+                      open={openDetailsDialog}
+                      onOpenChange={() => {
+                        setOpenDetailsDialog(false);
+                        dispatch(resetOrderDetails());
+                      }}
+                    >
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-xs sm:text-sm"
+                        onClick={() => handleFetchOrderDetails(orderItem?._id)}
                       >
-                        {orderItem?.orderStatus}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{formatVnd(orderItem?.totalAmount)}</TableCell>
-                    <TableCell>
-                      <Dialog
-                        open={openDetailsDialog}
-                        onOpenChange={() => {
-                          setOpenDetailsDialog(false);
-                          dispatch(resetOrderDetails());
-                        }}
-                      >
-                        <Button
-                          onClick={() =>
-                            handleFetchOrderDetails(orderItem?._id)
-                          }
-                        >
-                          {t("admin.order.view")}
-                        </Button>
-                        <ShoppingOrderDetailsView orderDetails={orderDetails} />
-                      </Dialog>
-                    </TableCell>
-                  </TableRow>
-                ))
-              : null}
+                        {t("admin.order.view")}
+                      </Button>
+                      <ShoppingOrderDetailsView orderDetails={orderDetails} />
+                    </Dialog>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={5}
+                  className="px-3 py-6 sm:px-4 text-center text-sm sm:text-base"
+                >
+                  {t("noorders")}
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </CardContent>

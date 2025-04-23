@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion"; // eslint-disable-line no-unused-vars
+import { motion } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { Button } from "@/components/ui/button";
 import {
   Airplay,
@@ -115,68 +115,83 @@ const ShoppingHome = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="relative w-full h-[800px] overflow-hidden">
+      {/* Hero Slider */}
+      <div className="relative w-full h-[200px] xs:h-[250px] sm:h-[350px] md:h-[450px] lg:h-[550px] xl:h-[650px] overflow-hidden">
         {featureImageList && featureImageList.length > 0
           ? featureImageList.map((slide, index) => (
-              <img
-                src={slide?.image}
+              <div
                 key={index}
                 className={`${
                   index === currentSlide ? "opacity-100" : "opacity-0"
-                } absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 cursor-pointer`}
-              />
+                } absolute inset-0 transition-opacity duration-1000`}
+              >
+                <img
+                  src={slide?.image}
+                  alt={`Slide ${index}`}
+                  className="w-full h-full object-cover object-center"
+                />
+              </div>
             ))
           : null}
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() =>
-            setCurrentSlide(
-              (prevSlide) =>
-                (prevSlide - 1 + featureImageList.length) %
-                featureImageList.length
-            )
-          }
-          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/80"
-        >
-          <ChevronLeftIcon className="size-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() =>
-            setCurrentSlide(
-              (prevSlide) => (prevSlide + 1) % featureImageList.length
-            )
-          }
-          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80"
-        >
-          <ChevronRightIcon className="size-4" />
-        </Button>
-      </div>
 
-      {/* Categories */}
-      <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">
+        {/* Navigation Buttons */}
+        {featureImageList.length > 1 && (
+          <>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() =>
+                setCurrentSlide(
+                  (prevSlide) =>
+                    (prevSlide - 1 + featureImageList.length) %
+                    featureImageList.length
+                )
+              }
+              className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 z-10"
+            >
+              <ChevronLeftIcon className="size-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() =>
+                setCurrentSlide(
+                  (prevSlide) => (prevSlide + 1) % featureImageList.length
+                )
+              }
+              className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 z-10"
+            >
+              <ChevronRightIcon className="size-4" />
+            </Button>
+          </>
+        )}
+      </div>
+      {/* Categories Section */}
+      <section className="py-8 sm:py-12 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8">
             {t("homePage.shopbycategory")}
           </h2>
           <motion.div
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4"
             variants={fadeInUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
             {categoriesWithIcon.map((item) => (
-              <motion.div whileHover={{ scale: 1.05 }} key={item.id}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                key={item.id}
+                className="w-full"
+              >
                 <Card
                   onClick={() => handleNavigateToListingPage(item, "category")}
-                  className="cursor-pointer transition-shadow"
+                  className="cursor-pointer transition-shadow h-full"
                 >
-                  <CardContent className="flex flex-col items-center justify-center p-6">
-                    <item.icon className="w-12 h-12 mb-4 text-primary" />
-                    <span className="font-bold">
+                  <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6">
+                    <item.icon className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 mb-2 sm:mb-4 text-primary" />
+                    <span className="text-sm sm:text-base font-medium sm:font-bold text-center">
                       {t(`menuitems.${item.label}`)}
                     </span>
                   </CardContent>
@@ -187,28 +202,34 @@ const ShoppingHome = () => {
         </div>
       </section>
 
-      {/* Brands */}
-      <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">
+      {/* Brands Section */}
+      <section className="py-8 sm:py-12 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8">
             {t("homePage.shopbybrand")}
           </h2>
           <motion.div
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4"
             variants={fadeInUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
             {brandsWithIcon.map((brand) => (
-              <motion.div whileHover={{ scale: 1.05 }} key={brand.id}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                key={brand.id}
+                className="w-full"
+              >
                 <Card
                   onClick={() => handleNavigateToListingPage(brand, "brand")}
-                  className="cursor-pointer transition-shadow"
+                  className="cursor-pointer transition-shadow h-full"
                 >
-                  <CardContent className="flex flex-col items-center justify-center p-6">
-                    <brand.icon className="w-12 h-12 mb-4 text-primary" />
-                    <span className="font-bold">{brand.label}</span>
+                  <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6">
+                    <brand.icon className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 mb-2 sm:mb-4 text-primary" />
+                    <span className="text-sm sm:text-base font-medium sm:font-bold text-center">
+                      {brand.label}
+                    </span>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -217,21 +238,25 @@ const ShoppingHome = () => {
         </div>
       </section>
 
-      {/* Products */}
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">
+      {/* Products Section */}
+      <section className="py-8 sm:py-12">
+        <div className="container mx-auto px-4 sm:px-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8">
             {t("homePage.featuredProduct")}
           </h2>
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
             variants={fadeInUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
             {productList.map((product) => (
-              <motion.div key={product._id} whileHover={{ scale: 1.03 }}>
+              <motion.div
+                key={product._id}
+                whileHover={{ scale: 1.03 }}
+                className="w-full"
+              >
                 <ProductGrid
                   product={product}
                   handleAddToCart={handleAddToCart}
