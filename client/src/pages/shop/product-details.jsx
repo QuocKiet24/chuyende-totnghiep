@@ -61,10 +61,7 @@ const ProductDetailsDialog = ({
       if (indexOfCurrentItem > -1) {
         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
         if (getQuantity + 1 > getTotalStock) {
-          toast({
-            title: `Only ${getQuantity} quantity can be added for this item`,
-            variant: "destructive",
-          });
+          toast.error(`Chỉ còn ${getQuantity} sản phẩm trong kho`);
           return;
         }
       }

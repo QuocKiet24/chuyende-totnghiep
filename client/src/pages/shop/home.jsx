@@ -63,6 +63,7 @@ const ShoppingHome = () => {
   );
   const { user } = useSelector((state) => state.auth);
   const { featureImageList } = useSelector((state) => state.commonFeature);
+  const { cartItems } = useSelector((state) => state.shopCart);
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
@@ -77,11 +78,29 @@ const ShoppingHome = () => {
     dispatch(fetchProductDetails(id));
   };
 
-  const handleAddToCart = (id) => {
+  const handleAddToCart = (id, getTotalStock) => {
     if (!user?._id) {
       toast.error("Đăng nhập để thêm giỏ hàng");
       navigate(`/${locale}/auth/login`);
       return;
+    }
+
+    let getCartItems = cartItems.items || [];
+
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === id
+      );
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getTotalStock) {
+          toast.error(
+            `Chỉ còn ${getQuantity} sản phẩm này. quá số lượng tồn kho`
+          );
+
+          return;
+        }
+      }
     }
     dispatch(addToCart({ userId: user._id, productId: id, quantity: 1 })).then(
       (data) => {

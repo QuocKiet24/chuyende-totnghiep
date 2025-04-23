@@ -107,7 +107,9 @@ const ShoppingListing = () => {
       if (indexOfCurrentItem > -1) {
         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
         if (getQuantity + 1 > getTotalStock) {
-          toast.error(`Chỉ có thể thêm ${getQuantity} cho sản phẩm này`);
+          toast.error(
+            `Chỉ còn ${getQuantity} sản phẩm này. quá số lượng tồn kho`
+          );
 
           return;
         }
