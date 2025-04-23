@@ -53,6 +53,8 @@
     "otpBtn": "Resend OTP"
   },
   "admin": {
+    "editProduct":"Edit Product",
+    "update":"Update",
     "shop": "Shop",
     "managebanner": "Manage Banner",
     "products": "Products",
@@ -129,5 +131,9 @@
   "address": "Address",
   "phone": "Phone",
   "notes": "Notes"
+},
+"search": {
+  "placeholder":"Search products by name, category or brand...",
+  "ptag":"Try adjusting your search or filter to find what you're looking for."
 }
 }

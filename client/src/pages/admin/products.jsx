@@ -150,7 +150,10 @@ const AdminProducts = () => {
           }
         }}
       >
-        <SheetContent side="right" className="overflow-y-auto max-w-md w-full">
+        <SheetContent
+          side="right"
+          className="overflow-y-auto max-w-md w-full p-5"
+        >
           <SheetHeader>
             <SheetTitle>
               {currentEditedId

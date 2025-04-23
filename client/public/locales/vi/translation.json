@@ -62,6 +62,8 @@
     "otpBtn": "Gửi lại mã"
   },
   "admin": {
+    "editProduct":"Sửa sản phẩm",
+    "update":"Cập nhật",
     "shop": "Cửa hàng",
     "managebanner": "Quản lý banner",
     "products": "Sản phẩm",
@@ -138,5 +140,9 @@
 "address": "Địa chỉ",
 "phone": "Điện thoại",
 "notes": "Ghi chú"
+},
+"search": {
+"placeholder":"Tìm kiếm sản phẩm theo tên, danh mục hoặc thương hiệu...",
+"ptag":"Hãy thử điều chỉnh tìm kiếm của bạn"
 }
 }

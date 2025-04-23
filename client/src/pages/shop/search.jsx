@@ -11,8 +11,10 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import ProductDetailsDialog from "./product-details";
 import ProductGrid from "@/components/shopping/productgrid";
+import { useTranslation } from "react-i18next";
 
 const SearchProduct = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [keyword, setKeyword] = useState("");
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
@@ -104,7 +106,7 @@ const SearchProduct = () => {
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             className="py-6 text-lg"
-            placeholder="Search products by name, category or brand..."
+            placeholder={t("search.placeholder")}
             aria-label="Search products"
           />
         </div>
@@ -156,7 +158,7 @@ const SearchProduct = () => {
             />
           </svg>
           <h3 className="mt-2 text-lg font-medium text-gray-900">
-            Try adjusting your search or filter to find what you're looking for.
+            {t("search.ptag")}
           </h3>
         </div>
       )}
