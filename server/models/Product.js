@@ -4,12 +4,12 @@ const ProductSchema = new mongoose.Schema(
   {
     image: String,
     title: {
-      vi: { type: String, required: true }, // Tiêu đề tiếng Việt
-      en: { type: String, required: true }, // Tiêu đề tiếng Anh
+      "vi-VN": { type: String, required: true },
+      "en-US": { type: String, required: true },
     },
     description: {
-      vi: { type: String, required: true }, // Mô tả tiếng Việt
-      en: { type: String, required: true }, // Mô tả tiếng Anh
+      "vi-VN": { type: String, required: true },
+      "en-US": { type: String, required: true },
     },
     category: {
       type: String,
