@@ -1,6 +1,7 @@
 import {
   BadgeCheck,
   ChartNoAxesCombined,
+  Image,
   LayoutDashboard,
   ShoppingBasket,
   StoreIcon,
@@ -17,11 +18,12 @@ const adminSidebarMenuItems = [
     path: "/shop/home",
     icon: <StoreIcon />,
   },
+
   {
-    id: "dashboard",
-    label: "dashboard",
-    path: "/admin/dashboard",
-    icon: <LayoutDashboard />,
+    id: "banner",
+    label: "managebanner",
+    path: "/admin/banners",
+    icon: <Image />,
   },
   {
     id: "products",

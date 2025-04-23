@@ -21,7 +21,7 @@
    "Title: Z to A": "Tên: Z đến A",
   "menuitems": {
     "home": "Trang chủ",
-    "products": "Sản phẩm",
+    "products": "Tất cả",
     "men": "Nam",
     "women": "Nữ",
     "kids": "Trẻ em",
@@ -57,10 +57,13 @@
   },
   "admin": {
     "shop": "Cửa hàng",
-    "dashboard": "Thống kê",
+    "managebanner": "Quản lý banner",
     "products": "Sản phẩm",
     "orders": "Đơn hàng",
     "createProduct": {
+      "confirm": "Xác nhận",
+      "edit": "Sửa",
+      "delete": "Xóa",
       "h2": "Tải hình ảnh lên",
       "pTagForImgUpload": "Kéo và thả hình ảnh vào đây hoặc nhấp để tải lên",
       "h1": "Thêm sản phẩm mới",
@@ -84,9 +87,34 @@
       "stockLabel": "Tồn kho",
       "placeholderStock": "Nhập số lượng tồn kho"
     },
-    "editProduct": "Chỉnh sửa sản phẩm"
+    "banner": {
+      "btnText": "Tải lên",
+      "btnLoading": "Đang tải...",
+      "noData": "Chưa có banner nào",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa hình ảnh này không?"
+    },
+    "order": {
+     "h1": "Tất cả đơn hàng",
+     "date": "Ngày đặt hàng",
+     "status": "Trạng thái đơn hàng",
+     "price":"Giá",
+     "view":"Xem chi tiết",
+     "method": "Phương thức thanh toán",
+     "details": "Chi tiết đơn hàng",
+     "title": "Tên sản phẩm",
+     "quantity": "Số lượng",
+     "shippingInfo": "Thông tin giao hàng",
+     "btnText": "Cập nhật trạng thái"
+    }
   },
   "homePage": {
-    
+    "shopbycategory":"Mua sắm theo danh mục",
+    "shopbybrand":"Mua sắm theo thương hiệu",
+    "featuredProduct":"Sản phẩm nổi bật"
+  },
+  "product": {
+    "outOfStock": "Hết hàng",
+    "sale": "Giảm giá",
+    "addToCart": "Thêm giỏ hàng"
   }
 }

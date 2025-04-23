@@ -41,7 +41,7 @@ function CheckAuth({ isAuthenticated, user, children }) {
     }
     return (
       <Navigate
-        to={`/${lang}/${role === "admin" ? "admin/dashboard" : "shop/home"}`}
+        to={`/${lang}/${role === "admin" ? "admin/banners" : "shop/home"}`}
         replace
       />
     );
@@ -58,7 +58,7 @@ function CheckAuth({ isAuthenticated, user, children }) {
   if (isAuthenticated && isAuthPage && isVerified !== false) {
     return (
       <Navigate
-        to={`/${lang}/${role === "admin" ? "admin/dashboard" : "shop/home"}`}
+        to={`/${lang}/${role === "admin" ? "admin/banners" : "shop/home"}`}
         replace
       />
     );

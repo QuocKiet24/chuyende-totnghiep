@@ -9,13 +9,14 @@ const initialState = {
 export const addReview = createAsyncThunk(
   "/review/addReview",
   async (formdata) => {
-    const response = api.post("/shop/review/add", formdata);
+    const response = await api.post("/shop/review/add", formdata);
     return response.data;
   }
 );
 
 export const getReviews = createAsyncThunk("/review/getReviews", async (id) => {
-  const response = api.get(`/shop/review/${id}`);
+  const response = await api.get(`/shop/review/${id}`);
+  console.log("GET reviews response", response.data); // ✅ log ra dữ liệu
   return response.data;
 });
 

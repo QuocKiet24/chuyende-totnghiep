@@ -2,6 +2,7 @@ import React from "react";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
 import { useTranslation } from "react-i18next";
+import { Edit, Trash2 } from "lucide-react"; // Import icons
 
 const ProductCard = ({
   product,
@@ -9,8 +10,9 @@ const ProductCard = ({
   setOpenCreateProductDialog,
   setCurrentEditedId,
   handleDelete,
+  isLoading = false,
 }) => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const lang = i18n.language || "en";
 
   const handleEdit = () => {
@@ -19,53 +21,72 @@ const ProductCard = ({
     setFormData(product);
   };
 
+  const priceDisplay = (price) => `₫${price?.toLocaleString() || "0"}`;
+
   return (
-    <Card className="w-full max-w-sm mx-auto shadow-sm hover:shadow-md transition-all duration-300">
-      {/* Image */}
-      <div className="relative">
+    <Card className="w-full max-w-sm mx-auto shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+      {/* Image with potential badge */}
+      <div className="relative group">
         <img
           src={product?.image}
-          alt={product?.title?.[lang]}
+          alt={product?.title?.[lang] || t("product.imageAlt")}
           className="w-full h-60 object-cover rounded-t-lg"
+          loading="lazy"
         />
+
+        {/* Sale badge if on sale */}
+        {product?.salePrice > 0 && (
+          <div className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+            Sale
+          </div>
+        )}
       </div>
 
-      {/* Content */}
-      <CardContent>
-        <h2 className="text-lg font-semibold mb-1 line-clamp-2 h-[48px]">
-          {product?.title?.[lang]}
+      <CardContent className="space-y-2">
+        <h2 className="text-lg font-semibold line-clamp-2 min-h-[3rem]">
+          {product?.title?.[lang] || t("product.noTitle")}
         </h2>
 
         <div className="flex items-center justify-between">
           <span
-            className={`text-base font-medium ${
+            className={`text-base ${
               product?.salePrice > 0
                 ? "line-through text-muted-foreground"
-                : "text-primary"
+                : "text-primary font-medium"
             }`}
           >
-            ₫{product?.price?.toLocaleString()}
+            {priceDisplay(product?.price)}
           </span>
 
           {product?.salePrice > 0 && (
             <span className="text-base font-semibold text-red-600">
-              ₫{product?.salePrice?.toLocaleString()}
+              {priceDisplay(product?.salePrice)}
             </span>
           )}
         </div>
       </CardContent>
 
       {/* Actions */}
-      <CardFooter className="flex justify-end gap-2">
-        <Button size="sm" onClick={handleEdit}>
-          Edit
+      <CardFooter className="flex justify-end gap-2 border-t pt-4">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleEdit}
+          disabled={isLoading}
+          className="flex items-center gap-1"
+        >
+          <Edit className="h-4 w-4" />
+          {t("admin.createProduct.edit")}
         </Button>
         <Button
           size="sm"
           variant="destructive"
           onClick={() => handleDelete?.(product?._id)}
+          disabled={isLoading}
+          className="flex items-center gap-1"
         >
-          Delete
+          <Trash2 className="h-4 w-4" />
+          {t("admin.createProduct.delete")}
         </Button>
       </CardFooter>
     </Card>

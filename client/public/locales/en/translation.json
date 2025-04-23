@@ -11,7 +11,7 @@
   "products": "Products",
   "menuitems": {
     "home": "Home",
-    "products": "Products",
+    "products": "All",
     "men": "Men",
     "women": "Women",
     "kids": "Kids",
@@ -48,10 +48,13 @@
   },
   "admin": {
     "shop": "Shop",
-    "dashboard": "Dashboard",
+    "managebanner": "Manage Banner",
     "products": "Products",
     "orders": "Orders",
     "createProduct": {
+      "confirm": "Confirm",
+      "edit": "Edit",
+      "delete": "Delete",
       "h2": "Upload Image",
       "pTagForImgUpload": "Drag and drop image here or click to upload",
       "h1": "Add new Product",
@@ -75,6 +78,34 @@
       "stockLabel":"Total Stock",
       "placeholderStock":"Enter total stock"
     },
-    "editProduct": "Edit Product"
-  }
+    "banner": {
+      "btnText": "Upload",
+      "btnLoading": "Uploading...",
+      "noData": "No feature images available",
+      "deleteConfirm": "Are you sure you want to delete this image?"
+    },
+   "order": {
+        "h1": "All Orders",
+        "date": "Order Date",
+        "status": "Order Status",
+        "price":"Price",
+        "view":"View Details",
+        "method": "Payment Method",
+        "details": "Order Details",
+        "title": "Product Name",
+        "quantity": "Quantity",
+        "shippingInfo": "Shipping Info",
+        "btnText": "Update Status"
+}
+  },
+  "homePage": {
+    "shopbycategory":"Shop by category",
+    "shopbybrand":"Shop by brand",
+    "featuredProduct":"Featured Products"
+  },
+    "product": {
+      "outOfStock": "Out of Stock",
+      "sale": "Sale",
+      "addToCart": "Add to Cart"
+    }
 }

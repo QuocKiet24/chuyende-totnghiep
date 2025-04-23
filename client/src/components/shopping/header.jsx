@@ -34,12 +34,13 @@ import { fetchCartItems } from "@/store/shop/cart-slice";
 import LanguageSwitcher from "../language/ChangeLanguage";
 import { Label } from "../ui/label";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
+import { motion } from "framer-motion"; // eslint-disable-line no-unused-vars
 
 const useShoppingMenuItems = () => {
   const { t } = useTranslation();
   return React.useMemo(
     () => [
+      { id: "products", label: t("menuitems.products"), path: "/shop/listing" },
       { id: "men", label: t("menuitems.men"), path: "/shop/listing" },
       { id: "women", label: t("menuitems.women"), path: "/shop/listing" },
       { id: "kids", label: t("menuitems.kids"), path: "/shop/listing" },
@@ -130,7 +131,7 @@ const HeaderRightContent = () => {
             <DropdownMenuSeparator />
             {user?.role === "admin" && (
               <>
-                <DropdownMenuItem onClick={() => navigate("/admin/dashboard")}>
+                <DropdownMenuItem onClick={() => navigate("/admin/banners")}>
                   <LayoutDashboardIcon className="mr-2 h-4 w-4" />
                   Admin
                 </DropdownMenuItem>
@@ -162,7 +163,7 @@ const HeaderRightContent = () => {
 function MenuItems() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams(); // eslint-disable-line no-unused-vars
   const menuItems = useShoppingMenuItems();
 
   function handleNavigate(getCurrentMenuItem) {

@@ -109,7 +109,11 @@ const ShoppingCheckout = () => {
             </div>
           </div>
           <div className="mt-4 w-full">
-            <Button onClick={handleInitiatePaypalPayment} className="w-full">
+            <Button
+              disabled={totalCartAmount === 0 || isPaymentStart}
+              onClick={handleInitiatePaypalPayment}
+              className="w-full"
+            >
               {isPaymentStart
                 ? "Processing Paypal Payment..."
                 : "Checkout with Paypal"}

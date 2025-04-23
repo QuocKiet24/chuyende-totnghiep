@@ -10,13 +10,13 @@ export const addProductReview = async (req, res) => {
     const order = await Order.findOne({
       userId,
       "cartItems.productId": productId,
-      orderStatus: "confirmed",
+      orderStatus: { $in: ["confirmed", "delivered"] }, // Adjust based on your logic
     });
 
     if (!order) {
       return res.status(403).json({
         success: false,
-        message: "you need to purchase product to review it",
+        message: "You need to purchase product to review it.",
       });
     }
 
@@ -54,7 +54,7 @@ export const addProductReview = async (req, res) => {
       success: true,
       data: newReview,
     });
-  } catch (error) {
+  } catch (e) {
     console.log(e);
     res.status(500).json({
       success: false,

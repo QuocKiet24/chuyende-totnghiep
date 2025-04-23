@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { Button } from "@/components/ui/button";
-
 import {
   Airplay,
   BabyIcon,
@@ -28,13 +28,14 @@ import ProductDetailsDialog from "./product-details";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { toast } from "sonner";
 import { getFeatureImages } from "@/store/common-slice";
+import { useTranslation } from "react-i18next";
 
 const categoriesWithIcon = [
-  { id: "men", label: "Men", icon: ShirtIcon },
-  { id: "women", label: "Women", icon: CloudLightning },
-  { id: "kids", label: "Kids", icon: BabyIcon },
-  { id: "accessories", label: "Accessories", icon: WatchIcon },
-  { id: "footwear", label: "Footwear", icon: UmbrellaIcon },
+  { id: "men", label: "men", icon: ShirtIcon },
+  { id: "women", label: "women", icon: CloudLightning },
+  { id: "kids", label: "kids", icon: BabyIcon },
+  { id: "accessories", label: "accessories", icon: WatchIcon },
+  { id: "footwear", label: "footwear", icon: UmbrellaIcon },
 ];
 
 const brandsWithIcon = [
@@ -46,7 +47,14 @@ const brandsWithIcon = [
   { id: "h&m", label: "H&M", icon: Heater },
 ];
 
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0 },
+};
+
 const ShoppingHome = () => {
+  const { t } = useTranslation();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { productList, productDetails } = useSelector(
@@ -58,50 +66,40 @@ const ShoppingHome = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
 
-  const handleNavigateToListingPage = (getCurrentItem, section) => {
+  const handleNavigateToListingPage = (item, section) => {
     sessionStorage.removeItem("filters");
-    const currentFilter = {
-      [section]: [getCurrentItem.id],
-    };
-
-    sessionStorage.setItem("filters", JSON.stringify(currentFilter));
+    sessionStorage.setItem("filters", JSON.stringify({ [section]: [item.id] }));
     navigate(`/shop/listing`);
   };
 
-  function handleGetProductDetails(getCurrentProductId) {
-    dispatch(fetchProductDetails(getCurrentProductId));
-  }
+  const handleGetProductDetails = (id) => {
+    dispatch(fetchProductDetails(id));
+  };
 
-  function handleAddToCart(getCurrentProductId) {
+  const handleAddToCart = (id) => {
     if (!user?._id) {
       toast.error("Please login to add items to cart");
-      navigate("/auth/login"); // Chuyển hướng đến trang login
+      navigate("/auth/login");
       return;
     }
-
-    dispatch(
-      addToCart({
-        userId: user._id,
-        productId: getCurrentProductId,
-        quantity: 1,
-      })
-    ).then((data) => {
-      if (data?.payload?.success) {
-        dispatch(fetchCartItems(user._id));
-        toast.success("Product is added to cart");
+    dispatch(addToCart({ userId: user._id, productId: id, quantity: 1 })).then(
+      (data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchCartItems(user._id));
+          toast.success("Product added to cart");
+        }
       }
-    });
-  }
+    );
+  };
 
   useEffect(() => {
-    if (productDetails !== null) setOpenDetailsDialog(true);
+    if (productDetails) setOpenDetailsDialog(true);
   }, [productDetails]);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % featureImageList.length);
+      setCurrentSlide((prev) => (prev + 1) % featureImageList.length);
     }, 6000);
-
     return () => clearInterval(timer);
   }, [featureImageList]);
 
@@ -112,9 +110,6 @@ const ShoppingHome = () => {
         sortParams: "price-lowtohigh",
       })
     );
-  }, [dispatch]);
-
-  useEffect(() => {
     dispatch(getFeatureImages());
   }, [dispatch]);
 
@@ -128,7 +123,7 @@ const ShoppingHome = () => {
                 key={index}
                 className={`${
                   index === currentSlide ? "opacity-100" : "opacity-0"
-                } absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000`}
+                } absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 cursor-pointer`}
               />
             ))
           : null}
@@ -159,69 +154,96 @@ const ShoppingHome = () => {
           <ChevronRightIcon className="size-4" />
         </Button>
       </div>
+
+      {/* Categories */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8">
-            Shop by category
+            {t("homePage.shopbycategory")}
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {categoriesWithIcon.map((categoryItem) => (
-              <Card
-                onClick={() =>
-                  handleNavigateToListingPage(categoryItem, "category")
-                }
-                key={categoryItem.id}
-                className="cursor-pointer hover:shadow-lg transition-shadow"
-              >
-                <CardContent className="flex flex-col items-center justify-center p-6">
-                  <categoryItem.icon className="w-12 h-12 mb-4 text-primary" />
-                  <span className="font-bold">{categoryItem.label}</span>
-                </CardContent>
-              </Card>
+          <motion.div
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {categoriesWithIcon.map((item) => (
+              <motion.div whileHover={{ scale: 1.05 }} key={item.id}>
+                <Card
+                  onClick={() => handleNavigateToListingPage(item, "category")}
+                  className="cursor-pointer transition-shadow"
+                >
+                  <CardContent className="flex flex-col items-center justify-center p-6">
+                    <item.icon className="w-12 h-12 mb-4 text-primary" />
+                    <span className="font-bold">
+                      {t(`menuitems.${item.label}`)}
+                    </span>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
+      {/* Brands */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Shop by Brand</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {brandsWithIcon.map((brandItem) => (
-              <Card
-                onClick={() => handleNavigateToListingPage(brandItem, "brand")}
-                key={brandItem.id}
-                className="cursor-pointer hover:shadow-lg transition-shadow"
-              >
-                <CardContent className="flex flex-col items-center justify-center p-6">
-                  <brandItem.icon className="w-12 h-12 mb-4 text-primary" />
-                  <span className="font-bold">{brandItem.label}</span>
-                </CardContent>
-              </Card>
+          <h2 className="text-3xl font-bold text-center mb-8">
+            {t("homePage.shopbybrand")}
+          </h2>
+          <motion.div
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {brandsWithIcon.map((brand) => (
+              <motion.div whileHover={{ scale: 1.05 }} key={brand.id}>
+                <Card
+                  onClick={() => handleNavigateToListingPage(brand, "brand")}
+                  className="cursor-pointer transition-shadow"
+                >
+                  <CardContent className="flex flex-col items-center justify-center p-6">
+                    <brand.icon className="w-12 h-12 mb-4 text-primary" />
+                    <span className="font-bold">{brand.label}</span>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
+      {/* Products */}
       <section className="py-12">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8">
-            Featured Products
+            {t("homePage.featuredProduct")}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {productList && productList.length > 0
-              ? productList.map((productItem) => (
-                  <ProductGrid
-                    key={productItem._id}
-                    handleGetProductDetails={handleGetProductDetails}
-                    product={productItem}
-                    handleAddToCart={handleAddToCart}
-                  />
-                ))
-              : null}
-          </div>
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {productList.map((product) => (
+              <motion.div key={product._id} whileHover={{ scale: 1.03 }}>
+                <ProductGrid
+                  product={product}
+                  handleAddToCart={handleAddToCart}
+                  handleGetProductDetails={handleGetProductDetails}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
+
+      {/* Product Details Dialog */}
       <ProductDetailsDialog
         open={openDetailsDialog}
         setOpen={setOpenDetailsDialog}

@@ -4,7 +4,7 @@ import AuthLayout from "./components/auth/layout";
 import AuthLogin from "./pages/auth/login";
 import AuthRegister from "./pages/auth/register";
 import AdminLayout from "./components/admin/layout";
-import AdminDashboard from "./pages/admin/dashboard";
+import BannerDashboard from "./pages/admin/banner";
 import AdminFeatures from "./pages/admin/features";
 import AdminOrders from "./pages/admin/orders";
 import AdminProducts from "./pages/admin/products";
@@ -54,7 +54,8 @@ const AppRoutes = () => {
             </CheckAuth>
           }
         >
-          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="banners" element={<BannerDashboard />} />
+
           <Route path="features" element={<AdminFeatures />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="products" element={<AdminProducts />} />

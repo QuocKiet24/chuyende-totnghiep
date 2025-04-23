@@ -26,6 +26,14 @@ export const createOrder = async (req, res) => {
     const amountVND = totalAmount;
     const amountUSD = (amountVND / VND_TO_USD_RATE).toFixed(2);
 
+    if (amountUSD === "0.00") {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Total amount must be greater than zero to proceed with payment.",
+      });
+    }
+
     const create_payment_json = {
       intent: "sale",
       payer: {
@@ -39,7 +47,9 @@ export const createOrder = async (req, res) => {
         {
           item_list: {
             items: cartItems.map((item) => {
-              const usdPrice = (item.price / VND_TO_USD_RATE).toFixed(2);
+              const usdPrice = (item.price / VND_TO_USD_RATE)
+                .toFixed(2)
+                .toString();
               return {
                 name: item.title,
                 sku: item.productId,
@@ -60,7 +70,7 @@ export const createOrder = async (req, res) => {
 
     paypal.payment.create(create_payment_json, async (error, paymentInfo) => {
       if (error) {
-        console.log(error);
+        console.error("PayPal error:", JSON.stringify(error, null, 2));
 
         return res.status(500).json({
           success: false,

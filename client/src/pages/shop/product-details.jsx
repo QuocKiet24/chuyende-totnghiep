@@ -27,16 +27,13 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
   const { cartItems } = useSelector((state) => state.shopCart);
   const { reviews } = useSelector((state) => state.shopReview);
 
-  const handleDialogClose = () => {
-    setOpen(false);
-    dispatch(setProductDetails());
-  };
+  function handleRatingChange(getRating) {
+    console.log(getRating, "getRating");
 
-  const handleRatingChange = (getRating) => {
     setRating(getRating);
-  };
+  }
 
-  const handleAddToCart = (getCurrentProductId, getTotalStock) => {
+  function handleAddToCart(getCurrentProductId, getTotalStock) {
     let getCartItems = cartItems.items || [];
 
     if (getCartItems.length) {
@@ -46,9 +43,10 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
       if (indexOfCurrentItem > -1) {
         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
         if (getQuantity + 1 > getTotalStock) {
-          toast.error(
-            `Only ${getQuantity} quantity can be added for this item`
-          );
+          toast({
+            title: `Only ${getQuantity} quantity can be added for this item`,
+            variant: "destructive",
+          });
 
           return;
         }
@@ -63,12 +61,21 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
     ).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user?._id));
-        toast.success("Added to Cart");
+        toast({
+          title: "Product is added to cart",
+        });
       }
     });
-  };
+  }
 
-  const handleOnReview = () => {
+  function handleDialogClose() {
+    setOpen(false);
+    dispatch(setProductDetails());
+    setRating(0);
+    setReviewMsg("");
+  }
+
+  function handleAddReview() {
     dispatch(
       addReview({
         productId: productDetails?._id,
@@ -78,18 +85,23 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
         reviewValue: rating,
       })
     ).then((data) => {
-      if (data.payload.success) {
+      console.log(data, "review response"); // THÊM DÒNG NÀY
+      if (data?.payload?.success) {
+        toast.success("success");
         setRating(0);
         setReviewMsg("");
         dispatch(getReviews(productDetails?._id));
-        toast.success("Review added successfully!");
+      } else {
+        toast.error("Error");
       }
     });
-  };
+  }
 
   useEffect(() => {
     if (productDetails !== null) dispatch(getReviews(productDetails?._id));
   }, [productDetails]);
+
+  console.log(reviews, "reviews");
 
   const averageReview =
     reviews && reviews.length > 0
@@ -167,9 +179,9 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
             <h2 className="text-xl font-bold mb-4 mt-4">Reviews</h2>
             <div className="grid gap-6">
               {reviews && reviews.length > 0 ? (
-                reviews.map((reviewItem, index) => (
-                  <div key={index} className="flex gap-4">
-                    <Avatar className="size-10 border">
+                reviews.map((reviewItem) => (
+                  <div className="flex gap-4">
+                    <Avatar className="w-10 h-10 border">
                       <AvatarFallback>
                         {reviewItem?.userName[0].toUpperCase()}
                       </AvatarFallback>
@@ -188,7 +200,7 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
                   </div>
                 ))
               ) : (
-                <h1>No Reviews yet</h1>
+                <h1>No Reviews</h1>
               )}
             </div>
             <div className="mt-10 flex-col flex gap-2">
@@ -206,7 +218,7 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
                 placeholder="Write a review..."
               />
               <Button
-                onClick={handleOnReview}
+                onClick={handleAddReview}
                 disabled={reviewMsg.trim() === ""}
               >
                 Submit

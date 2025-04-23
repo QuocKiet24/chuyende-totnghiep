@@ -149,7 +149,7 @@ const AdminProducts = () => {
             formControls={useAddProductFormElements()}
             formData={formData}
             setFormData={setFormData}
-            buttonText={t("admin.createProduct.h1")}
+            buttonText={t("admin.createProduct.confirm")}
           />
         </SheetContent>
       </Sheet>
