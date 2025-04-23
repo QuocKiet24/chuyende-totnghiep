@@ -73,7 +73,7 @@ export const editProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      image,
+      image, // Đây phải là URL ảnh mới từ Cloudinary
       title,
       description,
       category,
@@ -84,25 +84,33 @@ export const editProduct = async (req, res) => {
     } = req.body;
 
     const product = await Product.findById(id);
-    if (!product)
+    if (!product) {
       return res.status(404).json({
         success: false,
         message: "Product not found",
       });
+    }
 
-    product.image = image || product.image;
-    product.title = title || product.title;
-    product.description = description || product.description;
-    product.category = category || product.category;
-    product.brand = brand || product.brand;
-    product.price = price !== undefined ? price : product.price;
-    product.salePrice = salePrice !== undefined ? salePrice : product.salePrice;
-    product.totalStock =
-      totalStock !== undefined ? totalStock : product.totalStock;
+    // Chỉ cập nhật các trường được cung cấp
+    const updateFields = {
+      title: title || product.title,
+      description: description || product.description,
+      category: category || product.category,
+      brand: brand || product.brand,
+      price: price !== undefined ? price : product.price,
+      salePrice: salePrice !== undefined ? salePrice : product.salePrice,
+      totalStock: totalStock !== undefined ? totalStock : product.totalStock,
+    };
 
-    await product.save();
+    if (image) {
+      updateFields.image = image;
+    }
 
-    res.status(200).json({ success: true, data: product });
+    const updatedProduct = await Product.findByIdAndUpdate(id, updateFields, {
+      new: true,
+    });
+
+    res.status(200).json({ success: true, data: updatedProduct });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Error occurred" });

@@ -24,10 +24,13 @@ export const fetchAllProducts = createAsyncThunk(
 
 export const editProduct = createAsyncThunk(
   "/products/editProduct",
-  async ({ id, formData }) => {
-    const result = await api.put(`admin/products/edit/${id}`, formData);
-
-    return result?.data;
+  async ({ id, formData }, { rejectWithValue }) => {
+    try {
+      const result = await api.put(`admin/products/edit/${id}`, formData);
+      return result?.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
   }
 );
 

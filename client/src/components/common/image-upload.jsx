@@ -16,6 +16,7 @@ const ProductImageUpload = ({
   imageLoadingState,
   isEditMode,
   isCustomStyling = false,
+  setFieldValue,
 }) => {
   const { t } = useTranslation();
   const inputRef = useRef(null);
@@ -45,16 +46,23 @@ const ProductImageUpload = ({
   // todo: khi deploy dổi url thành url của server đc deploy
   const uploadImageToCloundinary = async () => {
     setImageLoadingState(true);
-    const data = new FormData();
-    data.append("my_file", imageFile);
-    const response = await axios.post(
-      "http://localhost:5000/api/admin/products/upload-image",
-      data
-    );
-    console.log(response, "response");
+    try {
+      const data = new FormData();
+      data.append("my_file", imageFile);
+      const response = await axios.post(
+        "http://localhost:5000/api/admin/products/upload-image",
+        data
+      );
 
-    if (response?.data?.success) {
-      setUploadedImageUrl(response.data.result.url);
+      if (response?.data?.success) {
+        const imageUrl = response.data.result.url;
+        setUploadedImageUrl(imageUrl);
+        // Cập nhật giá trị image vào form
+        setFieldValue("image", imageUrl);
+      }
+    } catch (error) {
+      console.error("Upload failed:", error);
+    } finally {
       setImageLoadingState(false);
     }
   };
@@ -81,8 +89,8 @@ const ProductImageUpload = ({
           className="hidden"
           ref={inputRef}
           onChange={handleImageFileChange}
-          disabled={isEditMode}
         />
+
         {!imageFile ? (
           <Label
             htmlFor="image-upload"

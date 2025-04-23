@@ -2,30 +2,21 @@ import React from "react";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
 import { useTranslation } from "react-i18next";
-import { Edit, Trash2 } from "lucide-react"; // Import icons
+import { Edit, Trash2 } from "lucide-react";
 
 const ProductCard = ({
   product,
-  setFormData,
-  setOpenCreateProductDialog,
-  setCurrentEditedId,
+  handleEdit, // Thay thế các prop riêng lẻ bằng handleEdit
   handleDelete,
   isLoading = false,
 }) => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language || "en";
 
-  const handleEdit = () => {
-    setOpenCreateProductDialog(true);
-    setCurrentEditedId?.(product?._id);
-    setFormData(product);
-  };
-
   const priceDisplay = (price) => `₫${price?.toLocaleString() || "0"}`;
 
   return (
     <Card className="w-full max-w-sm mx-auto shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
-      {/* Image with potential badge */}
       <div className="relative group">
         <img
           src={product?.image}
@@ -34,7 +25,6 @@ const ProductCard = ({
           loading="lazy"
         />
 
-        {/* Sale badge if on sale */}
         {product?.salePrice > 0 && (
           <div className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">
             Sale
@@ -66,12 +56,11 @@ const ProductCard = ({
         </div>
       </CardContent>
 
-      {/* Actions */}
       <CardFooter className="flex justify-end gap-2 border-t pt-4">
         <Button
           size="sm"
           variant="outline"
-          onClick={handleEdit}
+          onClick={handleEdit} // Sử dụng trực tiếp handleEdit
           disabled={isLoading}
           className="flex items-center gap-1"
         >
