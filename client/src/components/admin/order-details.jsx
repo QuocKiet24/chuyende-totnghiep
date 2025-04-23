@@ -100,7 +100,7 @@ function AdminOrderDetailsView({ orderDetails }) {
                         {t("admin.order.quantity")}: {item.quantity}
                       </span>
                       <span>
-                        {t("admin.order.price")}: ${item.price}
+                        {t("admin.order.price")}: {item.price} đ
                       </span>
                     </li>
                   ))

@@ -81,7 +81,7 @@ const AdminSidebar = ({ open, setOpen }) => {
       </Sheet>
       <aside className="hidden w-64 flex-col border-r bg-background p-6 lg:flex">
         <div
-          onClick={() => navigate("/admin/dashboard")}
+          onClick={() => navigate("/admin/banners")}
           className="flex items-center gap-2 cursor-pointer"
         >
           <ChartNoAxesCombined size={30} />

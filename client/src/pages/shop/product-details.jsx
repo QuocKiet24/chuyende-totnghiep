@@ -1,12 +1,17 @@
 import StarRatingComponent from "@/components/common/star-rating";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
-import { setProductDetails } from "@/store/shop/products-slice";
+import {
+  fetchAllFilteredProducts,
+  fetchProductDetails,
+  setProductDetails,
+} from "@/store/shop/products-slice";
 import { addReview, getReviews } from "@/store/shop/review-slice";
 import { formatVnd } from "@/utils/formatVnd";
 import { StarIcon } from "lucide-react";
@@ -15,8 +20,14 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 
-const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
-  const { i18n } = useTranslation();
+const ProductDetailsDialog = ({
+  open,
+  setOpen,
+  productDetails,
+  filters,
+  sort,
+}) => {
+  const { i18n, t } = useTranslation();
   const lang = i18n.language || "en";
 
   const [rating, setRating] = useState(0);
@@ -26,6 +37,15 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const { reviews } = useSelector((state) => state.shopReview);
+
+  const discountPercentage =
+    productDetails?.salePrice > 0
+      ? Math.round(
+          ((productDetails.price - productDetails.salePrice) /
+            productDetails.price) *
+            100
+        )
+      : 0;
 
   function handleRatingChange(getRating) {
     console.log(getRating, "getRating");
@@ -61,9 +81,7 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
     ).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user?._id));
-        toast({
-          title: "Product is added to cart",
-        });
+        toast.success("Added To Cart");
       }
     });
   }
@@ -84,30 +102,38 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
         reviewMessage: reviewMsg,
         reviewValue: rating,
       })
-    ).then((data) => {
-      console.log(data, "review response"); // THÊM DÒNG NÀY
-      if (data?.payload?.success) {
-        toast.success("success");
+    ).then((action) => {
+      if (addReview.fulfilled.match(action)) {
+        toast.success("Review added successfully!");
         setRating(0);
         setReviewMsg("");
         dispatch(getReviews(productDetails?._id));
-      } else {
-        toast.error("Error");
+        dispatch(fetchProductDetails(productDetails?._id));
+        dispatch(
+          fetchAllFilteredProducts({ filterParams: filters, sortParams: sort })
+        );
+      } else if (addReview.rejected.match(action)) {
+        const errorMessage = action.payload?.message || action.error?.message;
+
+        if (errorMessage.includes("purchase product")) {
+          toast.error("You need to purchase this product before reviewing it.");
+        } else if (errorMessage.includes("already reviewed")) {
+          toast.error("You have already reviewed this product!");
+        } else {
+          toast.error(errorMessage || "Failed to add review");
+        }
       }
     });
   }
 
+  console.log(productDetails);
+
+  const averageReview = productDetails?.averageReview || 0;
+  const reviewCount = productDetails?.totalReviews || 0;
+
   useEffect(() => {
     if (productDetails !== null) dispatch(getReviews(productDetails?._id));
   }, [productDetails]);
-
-  console.log(reviews, "reviews");
-
-  const averageReview =
-    reviews && reviews.length > 0
-      ? reviews.reduce((sum, reviewItem) => sum + reviewItem.reviewValue, 0) /
-        reviews.length
-      : 0;
 
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
@@ -127,23 +153,28 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
             <h1 className="text-3xl font-extrabold">
               {productDetails?.title?.[lang]}
             </h1>
-            <p className="text-muted-foreground text-2xl mb-5 mt-4">
+            <p className="text-muted-foreground text-2xl mb-8 mt-4">
               {productDetails?.description?.[lang]}
             </p>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between relative">
+            {productDetails?.salePrice > 0 && (
+              <div className="relative">
+                <Badge className="absolute -top-5 -right-5 bg-yellow-500 hover:bg-yellow-600 text-white">
+                  -{discountPercentage}%
+                </Badge>
+                <p className="text-2xl font-bold text-red-600">
+                  {formatVnd(productDetails?.salePrice)}
+                </p>
+              </div>
+            )}
             <p
               className={`${
                 productDetails?.salePrice > 0 ? "line-through" : ""
-              } text-3xl font-bold text-primary`}
+              } text-3xl font-bold text-muted-foreground`}
             >
               {formatVnd(productDetails?.price)}
             </p>
-            {productDetails?.salePrice > 0 && (
-              <p className="text-2xl font-bold text-red-600">
-                {formatVnd(productDetails?.salePrice)}
-              </p>
-            )}
           </div>
           <div className="flex items-center gap-2">
             <div className="flex items-center  mt-2">
@@ -154,11 +185,14 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
                 ({averageReview.toFixed(1)})
               </span>
             </div>
+            <p className="text-muted-foreground mt-2 ">
+              ({reviewCount} {t("reviewcount")})
+            </p>
           </div>
           <div className="mt-5 mb-5">
             {productDetails?.totalStock === 0 ? (
               <Button className="w-full opacity-60 cursor-not-allowed">
-                Out of Stock
+                {t("product.outOfStock")}
               </Button>
             ) : (
               <Button
@@ -170,13 +204,13 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
                   )
                 }
               >
-                Add to Cart
+                {t("product.addToCart")}
               </Button>
             )}
           </div>
           <Separator />
           <div className="max-h-[300px] overflow-auto">
-            <h2 className="text-xl font-bold mb-4 mt-4">Reviews</h2>
+            <h2 className="text-xl font-bold mb-4 mt-4"> {t("review")}</h2>
             <div className="grid gap-6">
               {reviews && reviews.length > 0 ? (
                 reviews.map((reviewItem) => (
@@ -204,7 +238,7 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
               )}
             </div>
             <div className="mt-10 flex-col flex gap-2">
-              <Label>Write a review</Label>
+              <Label> {t("addreview")}</Label>
               <div className="flex gap-1">
                 <StarRatingComponent
                   rating={rating}
@@ -215,13 +249,13 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
                 name="reviewMsg"
                 value={reviewMsg}
                 onChange={(e) => setReviewMsg(e.target.value)}
-                placeholder="Write a review..."
+                placeholder={t("writereview")}
               />
               <Button
                 onClick={handleAddReview}
                 disabled={reviewMsg.trim() === ""}
               >
-                Submit
+                {t("submit")}
               </Button>
             </div>
           </div>

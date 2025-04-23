@@ -25,6 +25,7 @@ import {
 import ProductDetailsDialog from "./product-details";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { toast } from "sonner";
+import NoData from "@/components/common/nodata";
 
 // Utils
 const createSearchParams = (filterParams) => {
@@ -49,6 +50,7 @@ const ShoppingListing = () => {
   const { productList, productDetails } = useSelector(
     (state) => state.shopProducts
   );
+
   const { cartItems } = useSelector((state) => state.shopCart);
   const { user } = useSelector((state) => state.auth);
   const categorySearchParam = searchParams.get("category");
@@ -145,8 +147,6 @@ const ShoppingListing = () => {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
 
-  console.log(productList);
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-3 p-4 md:p-6">
       <ProductFilter filters={filters} handleFilter={handleFilter} />
@@ -168,12 +168,15 @@ const ShoppingListing = () => {
           products={productList}
           handleGetProductDetails={handleGetProductDetails}
           handleAddToCart={handleAddToCart}
+          t={t}
         />
       </div>
       <ProductDetailsDialog
         open={openDetailsDialog}
         setOpen={setOpenDetailsDialog}
         productDetails={productDetails}
+        filters={filters}
+        sort={sort}
       />
     </div>
   );
@@ -203,18 +206,21 @@ const ProductList = ({
   products,
   handleGetProductDetails,
   handleAddToCart,
+  t,
 }) => (
   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-    {products?.length > 0
-      ? products.map((product) => (
-          <ProductGrid
-            key={product._id}
-            product={product}
-            handleGetProductDetails={handleGetProductDetails}
-            handleAddToCart={handleAddToCart}
-          />
-        ))
-      : null}
+    {products?.length > 0 ? (
+      products.map((product) => (
+        <ProductGrid
+          key={product._id}
+          product={product}
+          handleGetProductDetails={handleGetProductDetails}
+          handleAddToCart={handleAddToCart}
+        />
+      ))
+    ) : (
+      <NoData text={t("noproduct")} />
+    )}
   </div>
 );
 

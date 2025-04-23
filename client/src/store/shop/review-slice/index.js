@@ -8,15 +8,18 @@ const initialState = {
 
 export const addReview = createAsyncThunk(
   "/review/addReview",
-  async (formdata) => {
-    const response = await api.post("/shop/review/add", formdata);
-    return response.data;
+  async (formdata, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/shop/review/add", formdata);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
   }
 );
 
 export const getReviews = createAsyncThunk("/review/getReviews", async (id) => {
   const response = await api.get(`/shop/review/${id}`);
-  console.log("GET reviews response", response.data); // ✅ log ra dữ liệu
   return response.data;
 });
 

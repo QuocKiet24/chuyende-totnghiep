@@ -11,13 +11,11 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { formatVnd } from "@/utils/formatVnd";
 import { Star, ShoppingCart, Zap } from "lucide-react";
-import { useSelector } from "react-redux";
 import StarRatingComponent from "../common/star-rating";
 
 const ProductGrid = ({ product, handleGetProductDetails, handleAddToCart }) => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language || "en";
-  const reviews = useSelector((state) => state.shopReview.reviews);
 
   const discountPercentage =
     product?.salePrice > 0
@@ -40,11 +38,8 @@ const ProductGrid = ({ product, handleGetProductDetails, handleAddToCart }) => {
     tap: { scale: 0.95 },
   };
 
-  const averageReview =
-    reviews && reviews.length > 0
-      ? reviews.reduce((sum, reviewItem) => sum + reviewItem.reviewValue, 0) /
-        reviews.length
-      : 0;
+  const averageReview = product?.averageReview || 0;
+  const reviewCount = product?.totalReviews || 0;
 
   return (
     <motion.div
@@ -112,16 +107,14 @@ const ProductGrid = ({ product, handleGetProductDetails, handleAddToCart }) => {
 
         <CardContent className="p-4 pt-0">
           <div className="flex items-center gap-2">
-            <div className="flex items-center  mt-2">
-              <div className="flex items-center gap-0.5">
-                <StarRatingComponent rating={averageReview} />
-              </div>
-              <span className="text-muted-foreground">
-                ({averageReview.toFixed(1)})
+            <div className="flex items-center mt-2 gap-1">
+              <StarRatingComponent rating={averageReview} />
+              <span className="text-muted-foreground text-sm">
+                ({averageReview})
               </span>
             </div>
           </div>
-
+          <p className="text-muted-foreground mt-2 ">({reviewCount} Reviews)</p>
           {/* Pricing */}
           <div className="flex items-center justify-between mt-2">
             <div className="flex items-baseline gap-2">

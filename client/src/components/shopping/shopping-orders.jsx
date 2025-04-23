@@ -19,8 +19,10 @@ import {
 } from "@/store/shop/order-slice";
 import { Badge } from "../ui/badge";
 import { formatVnd } from "@/utils/formatVnd";
+import { useTranslation } from "react-i18next";
 
 const ShoppingOrders = () => {
+  const { t } = useTranslation();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -43,16 +45,17 @@ const ShoppingOrders = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Order History</CardTitle>
+        <CardTitle>{t("admin.order.h1")}</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Order ID</TableHead>
-              <TableHead>Order Date</TableHead>
-              <TableHead>Order Status</TableHead>
-              <TableHead>Order Price</TableHead>
+              <TableHead>ID</TableHead>
+              <TableHead>{t("admin.order.date")}</TableHead>
+              <TableHead>{t("admin.order.status")}</TableHead>
+              <TableHead>{t("admin.order.price")}</TableHead>
+
               <TableHead>
                 <span className="sr-only">Details</span>
               </TableHead>
@@ -63,7 +66,12 @@ const ShoppingOrders = () => {
               ? orderList.map((orderItem) => (
                   <TableRow key={orderItem?._id}>
                     <TableCell>{orderItem?._id}</TableCell>
-                    <TableCell>{orderItem?.orderDate.split("T")[0]}</TableCell>
+                    <TableCell>
+                      {" "}
+                      {new Date(orderItem?.orderDate).toLocaleDateString(
+                        "vi-VN"
+                      )}
+                    </TableCell>
                     <TableCell>
                       <Badge
                         className={`py-1 px-3 ${
@@ -91,7 +99,7 @@ const ShoppingOrders = () => {
                             handleFetchOrderDetails(orderItem?._id)
                           }
                         >
-                          View Details
+                          {t("admin.order.view")}
                         </Button>
                         <ShoppingOrderDetailsView orderDetails={orderDetails} />
                       </Dialog>

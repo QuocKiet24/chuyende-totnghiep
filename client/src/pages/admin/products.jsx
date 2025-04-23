@@ -1,6 +1,7 @@
 import ProductCard from "@/components/admin/productcard";
 import CommonForm from "@/components/common/form";
 import ProductImageUpload from "@/components/common/image-upload";
+import NoData from "@/components/common/nodata";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -118,9 +119,7 @@ const AdminProducts = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center text-muted-foreground mt-10">
-            {t("admin.createProduct.noProducts")}
-          </div>
+          <NoData text={t("noproduct")} />
         )}
       </div>
 

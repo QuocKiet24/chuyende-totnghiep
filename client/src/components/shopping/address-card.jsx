@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Label } from "../ui/label";
@@ -9,6 +10,7 @@ function AddressCard({
   setCurrentSelectedAddress,
   selectedId,
 }) {
+  const { t } = useTranslation();
   return (
     <Card
       onClick={
@@ -23,16 +25,26 @@ function AddressCard({
       }`}
     >
       <CardContent className="grid gap-4">
-        <Label>Address: {addressInfo?.address}</Label>
-        <Label>City: {addressInfo?.province}</Label>
-        <Label>District: {addressInfo?.district}</Label>
-        <Label>Ward: {addressInfo?.ward}</Label>
-        <Label>Phone: {addressInfo?.phone}</Label>
-        <Label>Notes: {addressInfo?.notes}</Label>
+        <Label>
+          {t("address.address")}: {addressInfo?.address}
+        </Label>
+        <Label>{addressInfo?.province}</Label>
+        <Label>{addressInfo?.district}</Label>
+        <Label>{addressInfo?.ward}</Label>
+        <Label>
+          {t("address.phone")}: {addressInfo?.phone}
+        </Label>
+        <Label>
+          {t("address.notes")}: {addressInfo?.notes}
+        </Label>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button onClick={() => handleEditAddress(addressInfo)}>Edit</Button>
-        <Button onClick={() => handleDeleteAddress(addressInfo)}>Delete</Button>
+        <Button onClick={() => handleEditAddress(addressInfo)}>
+          {t("address.edit")}
+        </Button>
+        <Button onClick={() => handleDeleteAddress(addressInfo)}>
+          {t("address.delete")}
+        </Button>
       </CardFooter>
     </Card>
   );

@@ -7,6 +7,12 @@
   "sort_by": "Sắp xếp",
   "filters": "Bộ lọc",
   "all_products": "Tất cả sản phẩm",
+  "reviewcount":"Lượt đánh giá",
+  "review":"Đánh giá",
+  "writereview":"Viết đánh giá...",
+  "addreview":"Đánh giá",
+  "submit":"Gửi",
+  "noproduct": "Chưa có sản phẩm",
    "category": "Danh mục",
    "brand": "Thương hiệu",
    "products": "Sản phẩm",
@@ -116,5 +122,21 @@
     "outOfStock": "Hết hàng",
     "sale": "Giảm giá",
     "addToCart": "Thêm giỏ hàng"
-  }
+  },
+  "cart":{
+    "title":"Giỏ hàng của bạn",
+    "subtotal": "Tạm tính",
+    "total":"Tổng cộng",
+    "btn": "Tiến hành thanh toán",
+    "freeship":"Miễn phí vận chuyển cho đơn hàng trên 500.000₫",
+    "empty": "Giỏ hàng của bạn trống",
+    "ptag" : "Bắt đầu mua sắm để thêm các mặt hàng"
+  },
+  "address":{
+"edit": "Sửa",
+"delete": "Xóa",
+"address": "Địa chỉ",
+"phone": "Điện thoại",
+"notes": "Ghi chú"
+}
 }

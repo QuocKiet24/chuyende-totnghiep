@@ -8,7 +8,13 @@
   "all_products": "All Products",
   "category": "Category",
   "brand": "Brand",
+  "reviewcount":"Reviews",
+  "review":"Feedback",
+  "addreview":"Rate it",
+  "writereview":"Write a review...",
+  "submit":"Submit",
   "products": "Products",
+  "noproduct": "No Products",
   "menuitems": {
     "home": "Home",
     "products": "All",
@@ -107,5 +113,21 @@
       "outOfStock": "Out of Stock",
       "sale": "Sale",
       "addToCart": "Add to Cart"
-    }
+    },
+ "cart":{
+    "title":"Your Cart",
+    "subtotal": "Subtotal",
+    "total":"Total",
+    "btn": "Proceed to Checkout",
+    "freeship":"Free shipping for orders over 500,000 VND",
+    "empty": "Your Cart is empty",
+    "ptag" : "Start shopping to add items"
+},
+"address":{
+  "edit": "Edit",
+  "delete":"Delete",
+  "address": "Address",
+  "phone": "Phone",
+  "notes": "Notes"
+}
 }

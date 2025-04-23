@@ -22,6 +22,8 @@ const ProductSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     salePrice: { type: Number, required: true },
     totalStock: { type: Number, required: true },
+    averageReview: { type: Number, default: 0 },
+    totalReviews: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
