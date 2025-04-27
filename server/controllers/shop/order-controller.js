@@ -136,18 +136,6 @@ export const createOrder = async (req, res) => {
 
       await newlyCreatedOrder.save();
 
-      for (let item of newlyCreatedOrder.cartItems) {
-        let product = await Product.findById(item.productId);
-        if (product) {
-          product.totalStock -= item.quantity;
-          await product.save();
-        }
-      }
-
-      if (cartId) {
-        await Cart.findByIdAndDelete(cartId);
-      }
-
       return res.status(201).json({
         success: true,
         redirectUrl: `${process.env.CLIENT_BASE_URL}/${lang}/shop/order-confirmation/${newlyCreatedOrder._id}`,
@@ -241,11 +229,15 @@ export const capturePayment = async (req, res) => {
       };
 
       // Gửi email xác nhận
-      await sendOrderConfirmationEmail(
-        user.email,
-        user.name || "Khách hàng",
-        emailData
-      );
+      try {
+        await sendOrderConfirmationEmail(
+          user.email,
+          user.name || "Khách hàng",
+          emailData
+        );
+      } catch (error) {
+        console.error("Error sending confirmation email:", error);
+      }
 
       return res.status(200).json({
         success: true,
@@ -340,37 +332,63 @@ export const confirmCodOrder = async (req, res) => {
     order.orderUpdateDate = new Date();
     await order.save();
 
-    // Gửi email xác nhận (chỉ khi confirm)
-    if (order.userId && order.userId.email) {
-      const emailData = {
-        orderId: order._id.toString(),
-        items: order.cartItems.map((item) => ({
-          name: item.title,
-          price: Number(item.price).toLocaleString("vi-VN"),
-          quantity: item.quantity,
-          total: (item.quantity * Number(item.price)).toLocaleString("vi-VN"),
-        })),
-        subtotal: order.totalAmount.toLocaleString("vi-VN"),
-        shipping: "0",
-        total: order.totalAmount.toLocaleString("vi-VN"),
-        shippingAddress: {
-          name: order.userId.name || "Khách hàng",
-          address: order.addressInfo.address,
-          ward: order.addressInfo.ward || "",
-          district: order.addressInfo.district || "",
-          province: order.addressInfo.province || "",
-          phone: order.addressInfo.phone,
-        },
-        paymentMethod: "COD",
-        orderDate: new Date(order.orderDate).toLocaleDateString("vi-VN"),
-        orderStatus: "confirmed",
-      };
+    for (let item of order.cartItems) {
+      let product = await Product.findById(item.productId);
 
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message: `not enough stock for this product `,
+        });
+      }
+
+      product.totalStock -= item.quantity;
+      await product.save();
+    }
+    const getCartId = order.cartId;
+    await Cart.findByIdAndDelete(getCartId);
+
+    // Lấy thông tin user
+    const user = await User.findById(order.userId);
+
+    if (!user || !user.email) {
+      return res
+        .status(400)
+        .json({ message: "Email không hợp lệ hoặc không có." });
+    }
+
+    const emailData = {
+      orderId: order._id.toString(),
+      items: order.cartItems.map((item) => ({
+        name: item.title,
+        price: Number(item.price).toLocaleString("vi-VN"),
+        quantity: item.quantity,
+        total: (item.quantity * Number(item.price)).toLocaleString("vi-VN"),
+      })),
+      subtotal: order.totalAmount.toLocaleString("vi-VN"),
+      shipping: "0",
+      total: order.totalAmount.toLocaleString("vi-VN"),
+      shippingAddress: {
+        name: user.name || "Khách hàng",
+        address: order.addressInfo.address,
+        ward: order.addressInfo.ward || "",
+        district: order.addressInfo.district || "",
+        province: order.addressInfo.province || "",
+        phone: order.addressInfo.phone,
+      },
+      paymentMethod: "COD",
+      orderDate: new Date(order.orderDate).toLocaleDateString("vi-VN"),
+      orderStatus: "confirmed",
+    };
+
+    try {
       await sendOrderConfirmationEmail(
-        order.userId.email,
-        order.userId.name || "Khách hàng",
+        user.email,
+        user.name || "Khách hàng",
         emailData
       );
+    } catch (error) {
+      console.error("Error sending confirmation email:", error);
     }
 
     res.status(200).json({
