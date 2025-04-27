@@ -52,6 +52,11 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0 },
 };
 
+const slideVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+};
+
 const ShoppingHome = () => {
   const { t } = useTranslation();
 
@@ -67,10 +72,15 @@ const ShoppingHome = () => {
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  const handleNavigateToListingPage = (item, section) => {
+  const handleNavigateToListingPage = (getCurrentItem, section) => {
     sessionStorage.removeItem("filters");
-    sessionStorage.setItem("filters", JSON.stringify({ [section]: [item.id] }));
+    const currentFilter = {
+      [section]: [getCurrentItem.id],
+    };
+
+    sessionStorage.setItem("filters", JSON.stringify(currentFilter));
     navigate(`/${locale}/shop/listing`);
   };
 
@@ -117,11 +127,30 @@ const ShoppingHome = () => {
   }, [productDetails]);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % featureImageList.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, [featureImageList]);
+    let timer;
+    if (isAutoPlaying && featureImageList?.length > 1) {
+      timer = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % featureImageList.length);
+      }, 6000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [featureImageList, isAutoPlaying]);
+
+  const goToNext = () => {
+    setIsAutoPlaying(false);
+    setCurrentSlide((prev) => (prev + 1) % featureImageList.length);
+    setTimeout(() => setIsAutoPlaying(true), 10000);
+  };
+
+  const goToPrev = () => {
+    setIsAutoPlaying(false);
+    setCurrentSlide(
+      (prev) => (prev - 1 + featureImageList.length) % featureImageList.length
+    );
+    setTimeout(() => setIsAutoPlaying(true), 10000);
+  };
 
   useEffect(() => {
     dispatch(
@@ -137,52 +166,63 @@ const ShoppingHome = () => {
     <div className="flex flex-col min-h-screen">
       {/* Hero Slider */}
       <div className="relative w-full h-[200px] xs:h-[250px] sm:h-[350px] md:h-[450px] lg:h-[550px] xl:h-[650px] overflow-hidden">
-        {featureImageList && featureImageList.length > 0
-          ? featureImageList.map((slide, index) => (
-              <div
-                key={index}
-                className={`${
-                  index === currentSlide ? "opacity-100" : "opacity-0"
-                } absolute inset-0 transition-opacity duration-1000`}
-              >
-                <img
-                  src={slide?.image}
-                  alt={`Slide ${index}`}
-                  className="w-full h-full object-cover object-center"
-                />
-              </div>
-            ))
-          : null}
+        {featureImageList && featureImageList.length > 0 ? (
+          featureImageList.map((slide, index) => (
+            <motion.div
+              key={index}
+              initial="hidden"
+              animate={index === currentSlide ? "visible" : "hidden"}
+              variants={slideVariants}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className="absolute inset-0"
+            >
+              <img
+                src={slide?.image}
+                alt={`Slide ${index}`}
+                className="w-full h-full object-cover object-center"
+                loading="lazy" // Thêm lazy loading
+              />
+            </motion.div>
+          ))
+        ) : (
+          <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
+            <span>No slides available</span>
+          </div>
+        )}
 
-        {/* Navigation Buttons */}
-        {featureImageList.length > 1 && (
+        {featureImageList?.length > 1 && (
           <>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() =>
-                setCurrentSlide(
-                  (prevSlide) =>
-                    (prevSlide - 1 + featureImageList.length) %
-                    featureImageList.length
-                )
-              }
-              className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 z-10"
+            <button
+              onClick={goToPrev}
+              className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 z-10 rounded-full p-2 shadow-lg transition-all duration-300 hover:scale-110"
+              aria-label="Previous slide"
             >
-              <ChevronLeftIcon className="size-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() =>
-                setCurrentSlide(
-                  (prevSlide) => (prevSlide + 1) % featureImageList.length
-                )
-              }
-              className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 z-10"
+              <ChevronLeftIcon className="size-5" />
+            </button>
+            <button
+              onClick={goToNext}
+              className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 z-10 rounded-full p-2 shadow-lg transition-all duration-300 hover:scale-110"
+              aria-label="Next slide"
             >
-              <ChevronRightIcon className="size-4" />
-            </Button>
+              <ChevronRightIcon className="size-5" />
+            </button>
+
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+              {featureImageList.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setIsAutoPlaying(false);
+                    setCurrentSlide(index);
+                    setTimeout(() => setIsAutoPlaying(true), 10000);
+                  }}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    index === currentSlide ? "bg-white w-4" : "bg-white/50"
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
           </>
         )}
       </div>

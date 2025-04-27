@@ -6,7 +6,6 @@ import jwt from "jsonwebtoken";
 // Register
 export const register = async (req, res) => {
   const { userName, email, password } = req.body;
-
   try {
     if (!userName || !email || !password) {
       return res.status(400).json({
@@ -14,14 +13,12 @@ export const register = async (req, res) => {
         message: "All fields are required",
       });
     }
-
     if (password.length < 8) {
       return res.status(400).json({
         success: false,
         message: "Password must be at least 8 characters",
       });
     }
-
     const checkUser = await User.findOne({ email });
     if (checkUser) {
       return res.status(400).json({
@@ -29,7 +26,6 @@ export const register = async (req, res) => {
         message: "User already exists with this email",
       });
     }
-
     const checkUserName = await User.findOne({ userName });
     if (checkUserName) {
       return res.status(400).json({
@@ -37,9 +33,7 @@ export const register = async (req, res) => {
         message: "User already exists with this name",
       });
     }
-
     const hashedPassword = await bcrypt.hash(password, 12);
-
     const verificationToken = Math.floor(
       100000 + Math.random() * 900000
     ).toString();
@@ -51,18 +45,14 @@ export const register = async (req, res) => {
       verificationToken,
       verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000,
     });
-
     await newUser.save();
-
     await sendVerificationEmail(email, userName, verificationToken);
-
     const payload = {
       user: {
         id: newUser._id,
         role: newUser.role,
       },
     };
-
     jwt.sign(
       payload,
       process.env.JWT_SECRET,

@@ -87,7 +87,7 @@ const ShoppingCheckout = () => {
   console.log(approvalURL);
 
   if (approvalURL) {
-    window.location.href(approvalURL);
+    window.location.href = approvalURL;
   }
 
   return (
