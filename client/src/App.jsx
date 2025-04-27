@@ -24,6 +24,7 @@ import { getCurrentUser } from "./store/auth-slice";
 import PaypalReturnPage from "./pages/shop/paypal-return";
 import PaymentSuccessPage from "./pages/shop/paypal-success";
 import SearchProduct from "./pages/shop/search";
+import OrderReturnPage from "./pages/shop/order-confirmation";
 
 const AppRoutes = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -90,6 +91,14 @@ const AppRoutes = () => {
             element={
               <CheckAuth isAuthenticated={isAuthenticated} user={user}>
                 <PaypalReturnPage />
+              </CheckAuth>
+            }
+          />
+          <Route
+            path="order-confirmation/:id"
+            element={
+              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                <OrderReturnPage />
               </CheckAuth>
             }
           />

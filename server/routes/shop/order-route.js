@@ -1,6 +1,7 @@
 import express from "express";
 import {
   capturePayment,
+  confirmCodOrder,
   createOrder,
   getAllOrdersByUser,
   getOrderDetails,
@@ -12,5 +13,6 @@ router.post("/create", createOrder);
 router.post("/capture", capturePayment);
 router.get("/list/:userId", getAllOrdersByUser);
 router.get("/details/:id", getOrderDetails);
+router.put("/cod/:orderId/confirm", confirmCodOrder);
 
 export default router;
