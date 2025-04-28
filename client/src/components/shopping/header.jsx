@@ -238,7 +238,10 @@ const ShoppingHeader = () => {
               <span className="sr-only">Toggle header menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-full max-w-xs px-10 py-5">
+          <SheetContent
+            side="left"
+            className="w-full max-w-xs px-10 py-5 bg-white rounded-lg overflow-hidden"
+          >
             <HeaderRightContent />
             <MenuItems />
           </SheetContent>

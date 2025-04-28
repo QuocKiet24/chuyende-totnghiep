@@ -130,7 +130,7 @@ const ProductDetailsDialog = ({
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
       <DialogTitle></DialogTitle>
-      <DialogContent className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 sm:p-6 md:p-8 max-w-[95vw] sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw]">
+      <DialogContent className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 sm:p-6 md:p-8 max-w-[95vw] sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] max-h-[90vh] overflow-y-auto bg-white rounded-lg">
         {/* Product Image */}
         <div className="relative overflow-hidden rounded-lg">
           <img
